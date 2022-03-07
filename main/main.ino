@@ -2,9 +2,6 @@
 // Ecran
 #define ScreenRx 0
 #define ScreenTx 0
-
-// Moteurs
-
 /* ---------- End define pins ----------- */
 
 #include "motors.h"
@@ -17,6 +14,12 @@
  * blabla
  * bla
  * blalalamabla
+\******************************************/
+
+/******************************************\
+ *          Compiled infos
+ * Bytes :      2488  /32256  ( 7%)
+ * Variables :  235   / 2048  (11%)
 \******************************************/
 
 // Motors
@@ -39,5 +42,5 @@ void loop() {
   ManageMotors(&Screw, &Platform);
   delay(1000);
   Serial.println(millis());
-  SetAimedPos((GetAimedPos() + 1) % 8);
+  //SetAimedPos((GetAimedPos() + 1) % 8);
 }
