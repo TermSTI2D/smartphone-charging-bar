@@ -140,8 +140,6 @@ void StayPlatformPos(motor *platform, byte pos) {
   }
   
   isOnLS = LSState;
-  
-  return;
 }
 
   
