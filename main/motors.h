@@ -8,8 +8,6 @@ struct motor {
   byte backward;
 };
 
-//struct motor;
-
 void InitMotors(motor & screw, motor & platform);
 void SetMotorStates(bool state);
 void ManageMotors(motor *screw, motor *platform);
