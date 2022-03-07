@@ -12,8 +12,8 @@
 #define ScrewMotorDown 5
 
 #define PlatformMotorEnable 0
-#define PlatformMotorForward 0
-#define PlatformMotorBackward 0
+#define PlatformMotorAntiClockwise 0
+#define PlatformMotorClockwise 0
 
 /* Limit switch pins */
 #define LSUp 2
@@ -25,9 +25,9 @@
 #define POSUP 1
 
 /* Variables */
-byte aimedPos = 0;    // Targetted position
-byte actualPos = 0;   // Actual position (Or last if it's moving)
-bool isOnLS = false;  // Used to know if the platform is on the limit switch
+byte aimedPos = 0;    // Targeted position
+byte actualPlatPos = 0;   // Actual position (Or last if it's moving)
+bool isOnLS = true;  // Used to know if the platform is on the limit switch
 
 
 /* Init function, call one time */
@@ -35,8 +35,12 @@ void InitMotors(motor & screw, motor & platform) {
   SetAimedPos(0);
 
   screw = motor { ScrewMotorUp, ScrewMotorDown };
-  platform = motor { PlatformMotorForward, PlatformMotorBackward };
+  platform = motor { PlatformMotorAntiClockwise, PlatformMotorClockwise };
 
+  // Load the actualPlatPosition ( & Aimed position? )
+  
+  isOnLS = true;
+  
   // SetMotorStates(true);
 }
 
@@ -58,15 +62,9 @@ void ManageMotors(motor *screw, motor *platform) {
   StayPlatformPos(platform, platformPos);
   //*/
 
+  //testings
   
   
-  //Serial.println("Manage");
-  //SetMotor(screw, false);
-  //Serial.println(screw->forward);
-  
-  
-  //byte screwpos = (aimedPos / 4 == 0) ? POSDOWN : POSUP;
-  //StayScrewPos(screw, screwpos);
   
 }
 
@@ -84,6 +82,8 @@ void SetMotor(motor *m, bool forward) {
 
 // Position management
 void StayScrewPos(motor *screw, byte pos) {
+  // Forward is Up
+  
   byte lswitch = (pos == POSUP) ? LSUp : LSDown;
   bool dir = pos == POSUP;
 
@@ -95,13 +95,31 @@ void StayScrewPos(motor *screw, byte pos) {
 }
 
 void StayPlatformPos(motor *platform, byte pos) {
-  Serial.println("Not implemented");
-  return;
-  //byte pos = aimedPos % 4;
+  // Forward is Anti clockwise
 
-  if (actualPos % 4 != pos) {
-      
+  bool LSState = digitalRead(LSPlatform);
+  
+  // Find shortest path
+  bool forward = true;
+  Serial.println("Not implemented shortest path");
+
+  // Update actualPos
+  if (LSState && !isOnLS) { // MAY ADD security w/ millis() :  > 1 sec
+    actualPlatPos += forward ? 1 : -1;
   }
+
+
+  // Go to the targeted position
+  byte current = actualPlatPos % 4;
+  if (current != pos || !isOnLS) {
+    SetMotor(platform, forward);
+  } else {
+    StopMotor(platform);
+  }
+  
+  isOnLS = LSState;
+  
+  return;
 }
 
   
