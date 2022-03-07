@@ -4,13 +4,7 @@
 #define ScreenTx 0
 
 // Moteurs
-#define ScrewMotorEnable 0
-#define ScrewMotorUp 4
-#define ScrewMotorDown 5
 
-#define PlatformMotorEnable 0
-#define PlatformMotorForward 0
-#define PlatformMotorBackward 0
 /* ---------- End define pins ----------- */
 
 #include "motors.h"
@@ -26,11 +20,14 @@
 \******************************************/
 
 // Motors
-motor Screw { ScrewMotorUp, ScrewMotorDown };
-motor Platform { PlatformMotorForward, PlatformMotorBackward };
+motor Screw;
+motor Platform;
 
 void setup() {
-  SetAimedPos(0);
+  InitMotors(Screw, Platform);
+
+
+
   
   Serial.begin(9600);
   delay(1000*2.5);

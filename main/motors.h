@@ -10,9 +10,12 @@ struct motor {
 
 //struct motor;
 
+void InitMotors(motor & screw, motor & platform);
+void SetMotorStates(bool state);
+void ManageMotors(motor *screw, motor *platform);
+
 void StopMotor(motor *m);
 void SetMotor(motor *m, bool forward);
-void ManageMotors(motor *screw, motor *platform);
 
 void StayScrewPos(motor *screw, byte pos);
 void StayPlatformPos(motor *platform, byte pos);
