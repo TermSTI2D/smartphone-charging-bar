@@ -1,7 +1,24 @@
-/******************************************\
+/****************************************************\
  *          Controle des moteurs
- * blablabla
-\******************************************/
+ * Initialisation des moteurs par InitMotors
+ *    Donne les bons pins
+ *    Enclenche les moteurs
+ *    Charge la position actuelle
+ * 
+ * Action continue par ManageMotors
+ *    Va au bon emplacement à l'aide des fonctions
+ *      - StayScrewPos
+ *      - StayPlatformPos
+ * 
+ * StayScrewPos
+ *    Emmene la vis en haut (Pos 1)
+ *    ou en bas (Pos 2) et y reste
+ * 
+ *    
+ * StayPlatformPos
+ *    Place la plateforme au bon
+ *    emplacement (De 1 à 4) et y reste
+\****************************************************/
 
 #include "motors.h"
 #include "management.h"
@@ -24,10 +41,14 @@
 #define POSDOWN 0
 #define POSUP 1
 
+#define SecurityDelay 1000
+
 /* Variables */
-byte aimedPos = 0;    // Targeted position
-byte actualPlatPos = 0;   // Actual position (Or last if it's moving)
-bool isOnLS = true;  // Used to know if the platform is on the limit switch
+byte aimedPos = 0;            // Targeted position
+
+byte actualPlatPos = 0;       // Actual position (Or last if it's moving)
+bool isOnLS = true;           // Used to know if the platform is on the limit switch
+unsigned long lastUpdate = 0; // Millis() of the last actualPos change (LS Security)
 
 
 /* Init function, call one time */
@@ -104,8 +125,9 @@ void StayPlatformPos(motor *platform, byte pos) {
   Serial.println("Not implemented shortest path");
 
   // Update actualPos
-  if (LSState && !isOnLS) { // MAY ADD security w/ millis() :  > 1 sec
+  if (LSState && !isOnLS && millis() - lastUpdate > SecurityDelay) {
     actualPlatPos += forward ? 1 : -1;
+    lastUpdate = millis();
   }
 
 
