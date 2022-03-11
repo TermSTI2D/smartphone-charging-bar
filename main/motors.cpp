@@ -39,7 +39,7 @@ unsigned long lastUpdate = 0; // Millis() of the last actualPos change (LS Secur
 
 /* Init function, call one time */
 void InitMotors(motor & screw, motor & platform) {
-  SetAimedPos(2);
+  SetAimedPos(0);
 
   screw = motor { ScrewMotorUp, ScrewMotorDown };
   platform = motor { PlatformMotorAntiClockwise, PlatformMotorClockwise };
@@ -47,8 +47,10 @@ void InitMotors(motor & screw, motor & platform) {
   // Load the actualPlatPosition ( & Aimed position? )
   
   isOnLS = true;
-  
-  // SetMotorStates(true);
+
+#if SETSTATES == 1
+  SetMotorStates(true);
+#endif
 }
 
 void SetMotorStates(bool state) {
@@ -59,30 +61,13 @@ void SetMotorStates(bool state) {
 
 /* Main function to call constantly */
 void ManageMotors(motor *screw, motor *platform) {
-  //Serial.println(screw->forward);
-  //SetMotor(screw, true);
-  //return;
-  //*
-
-
-  
   aimedPos = GetAimedPos();
   
-  //byte screwPos = aimedPos / 4;
-  //StayScrewPos(screw, screwPos);
+  byte screwPos = aimedPos / 4;
+  StayScrewPos(screw, screwPos);
   
   byte platformPos = aimedPos % 4;
   StayPlatformPos(platform, platformPos);
-
-
-
-  
-  //*/
-  //SetMotor(screw, true);
-  //testings
-  
-  
-  
 }
 
 // Motor management
@@ -119,8 +104,12 @@ void StayPlatformPos(motor *platform, byte pos) {
   bool LSState = digitalRead(LSPlatform);
   
   // Find shortest path
-  bool forward = true;
-  Serial.println("Not implemented shortest path");
+  bool forward = pos % 2 == actualPlatPos % 2;
+
+  if (!forward) {
+    byte dir = pos - actualPlatPos;
+    forward = dir == -3 | dir == 1;
+  }
 
   // Update actualPos
   if (LSState && !isOnLS && millis() - lastUpdate > SecurityDelay) {

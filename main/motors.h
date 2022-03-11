@@ -9,13 +9,15 @@
 #define ScrewMotorDown 5
 
 #define PlatformMotorEnable 0
-#define PlatformMotorAntiClockwise 4
-#define PlatformMotorClockwise 5
+#define PlatformMotorAntiClockwise 6
+#define PlatformMotorClockwise 7
+
+#define SETSTATES 0  // Set to one if "Enable" pins are set to other pins than 0
 
 /* Limit switch pins */
 #define LSUp 2
 #define LSDown 2
-#define LSPlatform 2
+#define LSPlatform 3
 
 
 struct motor {

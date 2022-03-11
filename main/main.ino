@@ -40,7 +40,7 @@ void setup() {
 
 void loop() {
   //digitalWrite( Screw.forward, HIGH );
-  ManageMotors(&Screw, &Platform);
+  //ManageMotors(&Screw, &Platform);
   //delay(1000);
   //Serial.println(millis());
   //SetAimedPos((GetAimedPos() + 1) % 8);
