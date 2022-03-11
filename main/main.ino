@@ -39,8 +39,9 @@ void setup() {
 
 
 void loop() {
+  //digitalWrite( Screw.forward, HIGH );
   ManageMotors(&Screw, &Platform);
-  delay(1000);
-  Serial.println(millis());
+  //delay(1000);
+  //Serial.println(millis());
   //SetAimedPos((GetAimedPos() + 1) % 8);
 }

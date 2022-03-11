@@ -23,20 +23,6 @@
 #include "motors.h"
 #include "management.h"
 
-/* Motor pins ( Enable - In1 - In2 ) */
-#define ScrewMotorEnable 0
-#define ScrewMotorUp 4
-#define ScrewMotorDown 5
-
-#define PlatformMotorEnable 0
-#define PlatformMotorAntiClockwise 0
-#define PlatformMotorClockwise 0
-
-/* Limit switch pins */
-#define LSUp 2
-#define LSDown 2
-#define LSPlatform 0
-
 /* Screw pos infos - Might be changed */
 #define POSDOWN 0
 #define POSUP 1
@@ -46,14 +32,14 @@
 /* Variables */
 byte aimedPos = 0;            // Targeted position
 
-byte actualPlatPos = 0;       // Actual position (Or last if it's moving)
+byte actualPlatPos = 0;       // Actual position (Or last if it's moving) (From 0 to 3)
 bool isOnLS = true;           // Used to know if the platform is on the limit switch
 unsigned long lastUpdate = 0; // Millis() of the last actualPos change (LS Security)
 
 
 /* Init function, call one time */
 void InitMotors(motor & screw, motor & platform) {
-  SetAimedPos(0);
+  SetAimedPos(2);
 
   screw = motor { ScrewMotorUp, ScrewMotorDown };
   platform = motor { PlatformMotorAntiClockwise, PlatformMotorClockwise };
@@ -73,16 +59,26 @@ void SetMotorStates(bool state) {
 
 /* Main function to call constantly */
 void ManageMotors(motor *screw, motor *platform) {
+  //Serial.println(screw->forward);
+  //SetMotor(screw, true);
+  //return;
   //*
+
+
+  
   aimedPos = GetAimedPos();
   
-  byte screwPos = aimedPos / 4;
-  StayScrewPos(screw, screwPos);
+  //byte screwPos = aimedPos / 4;
+  //StayScrewPos(screw, screwPos);
   
   byte platformPos = aimedPos % 4;
   StayPlatformPos(platform, platformPos);
-  //*/
 
+
+
+  
+  //*/
+  //SetMotor(screw, true);
   //testings
   
   
@@ -96,9 +92,11 @@ void StopMotor(motor *m) {
 }
 
 void SetMotor(motor *m, bool forward) {
-  StopMotor(m);
   byte pin = forward ? m->forward : m->backward;
+  byte pstop = forward ? m->backward : m->forward;
+  
   digitalWrite(pin, HIGH);
+  digitalWrite(pstop, LOW);
 }
 
 // Position management

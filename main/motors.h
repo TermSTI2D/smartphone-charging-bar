@@ -3,6 +3,21 @@
 
 #include <Arduino.h>
 
+/* Motor pins ( Enable - In1 - In2 ) */
+#define ScrewMotorEnable 0
+#define ScrewMotorUp 4
+#define ScrewMotorDown 5
+
+#define PlatformMotorEnable 0
+#define PlatformMotorAntiClockwise 4
+#define PlatformMotorClockwise 5
+
+/* Limit switch pins */
+#define LSUp 2
+#define LSDown 2
+#define LSPlatform 2
+
+
 struct motor {
   byte forward;
   byte backward;
