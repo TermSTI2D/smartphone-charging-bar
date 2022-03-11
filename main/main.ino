@@ -29,19 +29,14 @@ motor Platform;
 void setup() {
   InitMotors(Screw, Platform);
 
-
-
-  
+  // For testings
   Serial.begin(9600);
-  delay(1000*2.5);
+  //delay(1000*2.5);
   Serial.println("Starting");
 }
 
 
 void loop() {
-  //digitalWrite( Screw.forward, HIGH );
-  //ManageMotors(&Screw, &Platform);
-  //delay(1000);
-  //Serial.println(millis());
-  //SetAimedPos((GetAimedPos() + 1) % 8);
+  //ManageMotors(&Screw, &Platform);  // Manage
+  delay (10);
 }
