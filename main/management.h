@@ -3,6 +3,8 @@
 
 #include <Arduino.h>
 
+void InitManagement();
+
 void SetAimedPos(byte newPos);
 byte GetAimedPos();
 

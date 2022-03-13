@@ -27,12 +27,15 @@ motor Screw;
 motor Platform;
 
 void setup() {
-  InitMotors(Screw, Platform);
-
-  // For testings
   Serial.begin(9600);
-  //delay(1000*2.5);
   Serial.println("Starting");
+
+  
+  InitMotors(Screw, Platform);
+  InitManagement();
+  
+  // For testings
+  //delay(1000*2.5);
 }
 
 
