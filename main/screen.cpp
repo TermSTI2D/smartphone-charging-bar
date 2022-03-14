@@ -16,7 +16,7 @@ void InitScreen(){
 
 void ReceiveDataNextion(){
   if (nextionSerial.available()){
-    Serial.write(nextionSerial.read);
+    Serial.write(nextionSerial.read());
   }
 }
 
