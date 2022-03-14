@@ -6,6 +6,7 @@
 
 #include "motors.h"
 #include "management.h"
+#include "screen.h"
 
 /******************************************\
  *          How program work
@@ -33,6 +34,7 @@ void setup() {
   
   InitMotors(Screw, Platform);
   InitManagement();
+  InitScreen();
   
   // For testings
   //delay(1000*2.5);
@@ -41,5 +43,5 @@ void setup() {
 
 void loop() {
   //ManageMotors(&Screw, &Platform);  // Manage
-  delay (10);
+  delay(10);
 }
