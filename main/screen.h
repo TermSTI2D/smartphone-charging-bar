@@ -6,8 +6,8 @@
 
 int CommeCa(int parametre); // Pas de définition, juste le nom / parametres
 void InitScreen();
-void ReceiveDataNextion();
-void Password(int page);
+void SendDataNextion(String action, String value);
+void Password(byte page);
 
 
 

@@ -43,5 +43,6 @@ void setup() {
 
 void loop() {
   //ManageMotors(&Screw, &Platform);  // Manage
+  SendDataNextion("locAvailable.val=\"", "2");
   delay(10);
 }
