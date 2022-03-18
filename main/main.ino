@@ -36,9 +36,7 @@ void setup() {
   Serial.println("Starting");
 
   InitData();
-  SaveData("Test.txt", "10,11,156");
-  Serial.println(LoadData("Test.txt"));
-  
+  SaveData("f"+String(analogRead(A1))+".txt", "position");
 #else
   Serial.begin(9600);
   Serial.println("Starting");

@@ -1,17 +1,16 @@
 #include "management.h"
 #include "data.h"
 
-byte pos = 0;
-
+byte _aimedPos = 0;
 
 void InitManagement() {
   // Load data
 }
 
 void SetAimedPos(byte newPos) {
-  pos = newPos;
+  _aimedPos = newPos;
 }
 
 byte GetAimedPos() {
-  return pos;
+  return _aimedPos;
 }

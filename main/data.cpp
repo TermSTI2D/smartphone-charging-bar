@@ -13,16 +13,9 @@ void InitData() {
   delay(100);
   digitalWrite(OpenLogReset, HIGH);
 
- /* while (1) {
-    int v = OpenLog.read();
-    if (v == '<') break;
-    Serial.write(v);
-  }*/
-
   CleanTo('<');
 
   Serial.println("IC");
-  OpenLog.println("Initialisation complete");
 }
 
 
