@@ -46,7 +46,7 @@ Les données reçu par le port ```portSecondaire``` sont stockées sous la forme
 ```c++
 101,0,1,1,255,255,255
 ```
-Le ```101``` correspond au type d'élément cliqué.<br/>
+Le ```101``` correspond au type d'élément.<br/>
 Le ```0``` correspond à l'ID de la page qui possède le bouton.<br/>
 Le ```1``` correspond à l'ID du bouton qui a été cliqué.<br/>
 Le ```1``` indique si "Send Component ID" à été cliqué.<br/>
