@@ -2,12 +2,16 @@
 #define DATA_H
 
 #include <Arduino.h>
+#include <SoftwareSerial.h>
 
-struct phone {
-  bool isEmpty = false;
-  String pass_hash = "";
-};
+#define OpenLogRX 10
+#define OpenLogTX 3
+#define OpenLogReset 4
 
-phone *LoadPhones();
+
+void InitData();
+void CleanTo(char c);
+void SaveData(String filename, String data);
+String LoadData(String filename);
 
 #endif

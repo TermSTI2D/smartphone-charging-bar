@@ -2,10 +2,10 @@
 #include "data.h"
 
 byte pos = 0;
-phone *phones;
+
 
 void InitManagement() {
-  phones = LoadPhones();
+  // Load data
 }
 
 void SetAimedPos(byte newPos) {

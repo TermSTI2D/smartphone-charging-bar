@@ -23,20 +23,30 @@
  * Variables :  239   / 2048   (11%)
 \******************************************/
 
+#define DEBUG_MODE 1
+
 // Motors
 motor Screw;
 motor Platform;
 
+#include "data.h"
 void setup() {
+#if DEBUG_MODE == 1
+  Serial.begin(9600);
+  Serial.println("Starting");
+
+  InitData();
+  SaveData("Test.txt", "10,11,156");
+  Serial.println(LoadData("Test.txt"));
+  
+#else
   Serial.begin(9600);
   Serial.println("Starting");
 
   InitMotors(Screw, Platform);
   InitManagement();
   InitScreen();
-  
-  // For testings
-  //delay(1000*2.5);
+#endif
 }
 
 
