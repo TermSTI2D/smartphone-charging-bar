@@ -21,6 +21,13 @@ void SendDataNextion(String action, String value){
     nextionSerial.write(0xff); // Caractère de fin de transmission
 }
 ``` 
+### Envoyer des commandes depuis le Serial (IDE Arduino)
+Vous pouvez envoyer des commandes depuis le Serial de l'IDE Arduino.<br/>
+Il suffit d'aller dans le Serial Monitor de l'IDE Arduino et de taper les commandes suivantes :<br/>
+(La commande et la valeur doit être séparé par un espace)<br/>
+```variable.val=``` ```2``` : Modifier la valeur d'une variable (Ici, met la valeur de variable à 2)<br/>
+```page``` ```14``` ou ```page``` ```wait```  : Modifier la valeur d'un bouton (Ici, va à la page wait ou 14)<br/>
+
 ### Récupérer des données
 Pour récupérer des données, il faut créer une fonction qui va recevoir les données. La fonction attend de recvoir un signal du port ```portSecondaire``` et va les stocker dans un tableau.
 ```arduino
@@ -33,3 +40,13 @@ void ReceiveDataNextion(){
   }
 }
 ```
+### Traitement des données
+Les données reçu par le port ```portSecondaire``` sont stockées sous la forme : 
+```c++
+101,0,1,1,255,255,255
+```
+Le ```101``` correspond au type d'élément cliqué.<br/>
+Le ```0``` correspond à l'ID de la page qui possède le bouton.<br/>
+Le ```1``` correspond à l'ID du bouton qui a été cliqué.<br/>
+Le ```1``` indique si "Send Component ID" à été cliqué.<br/>
+Les ```255``` correspond à la fin de l'event.<br/>
