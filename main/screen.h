@@ -6,8 +6,11 @@
 
 int CommeCa(int parametre); // Pas de définition, juste le nom / parametres
 void InitScreen();
+void ReceiveDataNextion();
 void SendDataNextion(String action, String value);
+void sendCommandFromSerial();
 void Password(byte page);
+
 
 
 

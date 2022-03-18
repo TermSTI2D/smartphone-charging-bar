@@ -31,7 +31,6 @@ void setup() {
   Serial.begin(9600);
   Serial.println("Starting");
 
-  
   InitMotors(Screw, Platform);
   InitManagement();
   InitScreen();
@@ -43,6 +42,9 @@ void setup() {
 
 void loop() {
   //ManageMotors(&Screw, &Platform);  // Manage
-  SendDataNextion("locAvailable.val=\"", "2");
+  
+  //SendDataNextion("locAvailable.val=", "5");
+  ReceiveDataNextion();
+  sendCommandFromSerial();
   delay(10);
 }
