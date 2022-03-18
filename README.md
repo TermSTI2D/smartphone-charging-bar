@@ -12,7 +12,7 @@ Les commandes doivent être sous la forme :
 locAvailable.val="1";
 ```	
 Elles sont envoyées sur les ports Rx Tx avec des ```print()```
-```arduino 
+```c++ 
 void SendDataNextion(String action, String value){
     nextionSerial.print(action); // Commande à envoyer 
     nextionSerial.print(value); // Valeur à envoyer
@@ -30,7 +30,7 @@ Il suffit d'aller dans le Serial Monitor de l'IDE Arduino et de taper les comman
 
 ### Récupérer des données
 Pour récupérer des données, il faut créer une fonction qui va recevoir les données. La fonction attend de recvoir un signal du port ```portSecondaire``` et va les stocker dans un tableau.
-```arduino
+```c++
 void ReceiveDataNextion(){
   delay(100);
   if  (nextionSerial.available()){
