@@ -4,7 +4,8 @@
 // Variables
 int messageReceived[7] = {};
 String commandFromSerial = ""; 
-
+bool passwordConfirmation = false;
+String writePasswordVar = "";
 #define buttonsLine 1
 #define buttonsColumn 3
 
@@ -16,7 +17,13 @@ struct Button {
 
 Button buttons[] = {
   { 0, 3, []() { SendDataNextion("page", "2"); } }, //Btn (Recharger son smartphone)
-  { 2, 2, []() { Serial.println("Fonction du bouton 2"); } }, //Btn (Ajouter son smartphone)
+  { 2, 2, []() { SendDataNextion("page", "3"); } }, //Btn (Ajouter son smartphone)
+  { 3, 2, []() { addPhone("wireless"); } }, //Btn (Recharge sans fil)
+  { 3, 3, []() { addPhone("cable"); } }, //Btn (Recharge filaire)
+  { 4, 2, []() { passwordConfirmation = true; } }, //Btn (Valider : Page ajouter un code)
+  { 4, 3, []() { writePassword("erase"); } }, //Btn (Effacer : Page ajouter un code)
+  { 4, 4, []() { writePassword("0"); } }, //Btn (0 : Page ajouter un code)
+  { 4, 5, []() { writePassword("1"); } }, //Btn (1 : Page ajouter un code)
 };
 
 size_t bsize = sizeof(buttons) / sizeof(Button);
@@ -36,6 +43,7 @@ void InitScreen(){
   Serial.println("--------------------------");
   nextionSerial.begin(9600);
   Serial.println("nextionSerial port has been set to 9600");
+  SendDataNextion("page", "0");
 }
 
 //Search button
@@ -101,10 +109,62 @@ void sendCommandFromSerial(){
   }
 }
 
+/******************************************\
+ *          Password type page
+ * 1 : create
+ * 2 : confirm
+ * 3 : verify (recover smartphone)
+\******************************************/
+
+String Password(int page){
+  writePasswordVar = "";
+  SendDataNextion("password.txt=", "\"" + writePasswordVar + "\"");
+  switch (page) {
+    case 1:
+      //Create password
+      SendDataNextion("page", "4");
+      break;
+    case 2:
+      //Confirm password
+      SendDataNextion("page", "5");
+      break;
+    case 3:
+      //Verify password
+      SendDataNextion("page", "13");
+      break;
+  }
+  while(!passwordConfirmation && writePasswordVar.length() != 4){
+    ReceiveDataNextion();
+    sendCommandFromSerial();
+    delay(10);
+  }
+  Serial.println("Debug : Sortie de boucle");
+  passwordConfirmation == false;
+  return writePasswordVar;
+}
+
+String writePassword(String actionOrNumber){
+  if(actionOrNumber == "erase"){
+    int length=writePasswordVar.length();
+    writePasswordVar.setCharAt(length-1,'\t');
+    writePasswordVar.trim();
+    Serial.println("Supprimer");
+    SendDataNextion("password.txt=", "\"" + writePasswordVar + "\"");
+
+  }
+  else{
+    writePasswordVar = writePasswordVar + actionOrNumber;
+    Serial.println("Debug : ajout de : " + String(actionOrNumber));
+    SendDataNextion("password.txt=", "\"" + writePasswordVar + "\"");
+  }
+}
 
 //Function AddPhone
-void addPhone(){
-
+//Type : wireless, cable
+void addPhone(String type){
+  String password = "";
+  password = Password(1);
+  Serial.println("(Debug) : Sortie de la boucle 2eme fois");
 }
 
 //Function RecoverPhone
@@ -112,21 +172,4 @@ void recoverPhone(){
 
 }
 
-/******************************************\
- *          Password type page
- * 1 : create
- * 2 : confirm
- * 3 : verify (recover smartphone)
-\******************************************/
-void Password(byte page){
-  if(page==1){
 
-  } else if(page==2){
-
-  } else if(page==3){
-
-  } else{
-    //Page not found
-    //Add eror page and error code
-  }
-}

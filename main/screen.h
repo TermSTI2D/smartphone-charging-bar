@@ -9,8 +9,9 @@ void searchButton(int pageID,int buttonID);
 void ReceiveDataNextion();
 void SendDataNextion(String action, String value);
 void sendCommandFromSerial();
-void Password(byte page);
-void addPhone();
+String Password(int page);
+String writePassword(String actionOrNumber);
+void addPhone(String type);
 void recoverPhone();
 
 
