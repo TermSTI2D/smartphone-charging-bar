@@ -8,9 +8,24 @@ String commandFromSerial = "";
 #define buttonsLine 1
 #define buttonsColumn 3
 
-char buttons[buttonsLine][buttonsColumn] = { //[Lignes][Colones]
-  {'0','3','SendDataNextion(page, 2)'} //Page ID, Button ID, Function
+struct Button {
+  byte pageId;
+  byte buttonId;
+  void (*button_func) (void);
 };
+
+Button buttons[] = {
+  { 0, 3, []() { SendDataNextion("page", "2"); } }, //Btn (Recharger son smartphone)
+  { 2, 2, []() { Serial.println("Fonction du bouton 2"); } }, //Btn (Ajouter son smartphone)
+};
+
+size_t bsize = sizeof(buttons) / sizeof(Button);
+
+
+
+// char buttons[buttonsLine][buttonsColumn] = { //[Lignes][Colones]
+//   {'0','3','SendDataNextion(page, 2)'} //Page ID, Button ID, Function
+// };
 
 SoftwareSerial  nextionSerial(10, 11); // RX, TX
 
@@ -24,15 +39,12 @@ void InitScreen(){
 }
 
 //Search button
-void searchButton(int pageID,int buttonID){
+void searchButton(int pageId,int buttonId){
   Serial.println("");
-  Serial.println("Search page " + String(pageID) + " and button " + String(buttonID));
-  for(int i = 0; i < buttonsLine; i++){
-    //search line when pageID and buttonID are in same line
-    if(String(buttons[i][0]) == String(pageID) && String(buttons[i][1]) == String(buttonID)){
-      Serial.println("Button found");
-      //Print text in column 2
-      Serial.println("Text to send : " + String(buttons[i][2]));
+  Serial.println("Search page " + String(pageId) + " and button " + String(buttonId));
+  for (size_t i = 0; i < bsize; i++) {
+    if (buttons[i].pageId == pageId && buttons[i].buttonId == buttonId) {
+      buttons[i].button_func();
     }
   }
 }
