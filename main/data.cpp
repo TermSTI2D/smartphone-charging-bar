@@ -17,7 +17,7 @@ void InitData() {
   unsigned long start = millis();
   while(true) {
     if(OpenLog.available())
-      if (OpenLog.read() == c) break;
+      if (OpenLog.read() == '<') break;
 
     if (millis() - start > TIMEOUT_DELAY) {
       hasSdCard = false;
