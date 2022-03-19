@@ -4,12 +4,14 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
 
-int CommeCa(int parametre); // Pas de définition, juste le nom / parametres
 void InitScreen();
+void searchButton(int pageID,int buttonID);
 void ReceiveDataNextion();
 void SendDataNextion(String action, String value);
 void sendCommandFromSerial();
 void Password(byte page);
+void addPhone();
+void recoverPhone();
 
 
 

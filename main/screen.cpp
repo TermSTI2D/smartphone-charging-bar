@@ -5,11 +5,14 @@
 int messageReceived[7] = {};
 String commandFromSerial = ""; 
 
-SoftwareSerial  nextionSerial(10, 11); // RX, TX
+#define buttonsLine 1
+#define buttonsColumn 3
 
-int CommeCa(int paremetre) { // Meme signature (nom / parametres) mais on déclare un corps
-  return 1546;
-}
+char buttons[buttonsLine][buttonsColumn] = { //[Lignes][Colones]
+  {'0','3','SendDataNextion(page, 2)'} //Page ID, Button ID, Function
+};
+
+SoftwareSerial  nextionSerial(10, 11); // RX, TX
 
 void InitScreen(){
   Serial.println("--------------------------");
@@ -20,6 +23,19 @@ void InitScreen(){
   Serial.println("nextionSerial port has been set to 9600");
 }
 
+//Search button
+void searchButton(int pageID,int buttonID){
+  Serial.println("");
+  Serial.println("Search page " + String(pageID) + " and button " + String(buttonID));
+  for(int i = 0; i < buttonsLine; i++){
+    //search line when pageID and buttonID are in same line
+    if(String(buttons[i][0]) == String(pageID) && String(buttons[i][1]) == String(buttonID)){
+      Serial.println("Button found");
+      //Print text in column 2
+      Serial.println("Text to send : " + String(buttons[i][2]));
+    }
+  }
+}
 
 void ReceiveDataNextion(){
   delay(100);
@@ -32,6 +48,9 @@ void ReceiveDataNextion(){
     Serial.println("Received : ");
     for (int i = 0; i < 7; i++) {
       Serial.print("   Data" + String(i) + " : " + messageReceived[i]);
+    }
+    if(messageReceived[0]==101){
+      searchButton(messageReceived[1],messageReceived[2]);
     }
   }
 }
@@ -68,6 +87,17 @@ void sendCommandFromSerial(){
     // Send data to Nextion
     SendDataNextion(command, value);
   }
+}
+
+
+//Function AddPhone
+void addPhone(){
+
+}
+
+//Function RecoverPhone
+void recoverPhone(){
+
 }
 
 /******************************************\
