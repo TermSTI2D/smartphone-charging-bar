@@ -45,6 +45,7 @@ void InitMotors(motor & screw, motor & platform) {
   platform = motor { PlatformMotorAntiClockwise, PlatformMotorClockwise };
 
   // Load the actualPlatPosition ( & Aimed position? )
+  actualPlatPos = LoadData("curpos.txt", "0").toInt();
   
   isOnLS = true;
 
@@ -115,6 +116,8 @@ void StayPlatformPos(motor *platform, byte pos) {
   if (LSState && !isOnLS && millis() - lastUpdate > SecurityDelay) {
     actualPlatPos += forward ? 1 : -1;
     lastUpdate = millis();
+
+    SaveData("curpos.txt", String(actualPlatPos));
   }
 
 

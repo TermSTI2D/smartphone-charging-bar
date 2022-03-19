@@ -13,6 +13,6 @@
 void InitData();
 void CleanTo(char c);
 void SaveData(String filename, String data);
-String LoadData(String filename);
+String LoadData(String filename, String baseValue);
 
 #endif

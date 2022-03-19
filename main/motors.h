@@ -2,6 +2,7 @@
 #define MOTORS_H
 
 #include <Arduino.h>
+#include "data.h"
 
 /* Motor pins ( Enable - In1 - In2 ) */
 #define ScrewMotorEnable 0

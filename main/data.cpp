@@ -17,7 +17,7 @@ void InitData() {
   unsigned long start = millis();
   while(true) {
     if(OpenLog.available())
-      if (OpenLog.read() == c) break;
+      if (OpenLog.read() == '<') break;
 
     if (millis() - start > TIMEOUT_DELAY) {
       hasSdCard = false;
@@ -52,6 +52,8 @@ void GotoCommand() {
 }
 
 void SaveData(String filename, String data) {
+  if (!hasSdCard) return;
+  
   GotoCommand();
   
   // Recreate the file
@@ -69,7 +71,9 @@ void SaveData(String filename, String data) {
   isComMode = false;
 }
 
-String LoadData(String filename) {
+String LoadData(String filename, String baseValue) {
+  if (!hasSdCard) return baseValue;
+  
   GotoCommand();
   
   // Open & Read the file
