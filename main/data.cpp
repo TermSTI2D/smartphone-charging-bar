@@ -3,7 +3,7 @@
 SoftwareSerial OpenLog(OpenLogRX, OpenLogTX);
 bool isComMode = false;
 bool isComReady = false;
-bool hasSdCard = true;
+bool hasSdCard = false;
 
 void InitData() {
   OpenLog.begin(9600);
@@ -16,8 +16,12 @@ void InitData() {
 
   unsigned long start = millis();
   while(true) {
-    if(OpenLog.available())
-      if (OpenLog.read() == '<') break;
+    if(OpenLog.available()) {
+      if (OpenLog.read() == '<') {
+        hasSdCard = true;
+        break;
+      }
+    }
 
     if (millis() - start > TIMEOUT_DELAY) {
       hasSdCard = false;
