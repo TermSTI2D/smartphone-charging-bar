@@ -41,7 +41,7 @@ void ReceiveDataNextion(){
   }
 }
 ```
-### Traitement des données
+### Reception des données
 Les données reçu par le port ```portSecondaire``` sont stockées sous la forme : 
 ```c++
 101,0,1,1,255,255,255
@@ -51,3 +51,29 @@ Le ```0``` correspond à l'ID de la page qui possède le bouton.<br/>
 Le ```1``` correspond à l'ID du bouton qui a été cliqué.<br/>
 Le ```1``` indique si "Send Component ID" à été cliqué.<br/>
 Les ```255``` correspond à la fin de l'event.<br/>
+### Traitement des données reçu
+Le traitements des données reçu est le suivant :<br/>
+Les boutons sont d'abbord stockés comme dans l'exemple ci-dessous :<br/>
+```c++
+struct Button {
+  byte pageId;
+  byte buttonId;
+  void (*button_func) (void);
+};
+
+Button buttons[] = {
+  { 0, 3, []() { SendDataNextion("page", "2"); } }, //Btn (Recharger son smartphone)
+  { 2, 2, []() { SendDataNextion("page", "2"); } }, //Btn (Ajouter son smartphone)
+};
+```
+
+Le premier élément correspond à *l'ID de la page*, le second à *l'ID du bouton* et le troisième à la *fonction* qui sera exécuté lorsque le bouton est cliqué.
+<br/>
+<br/>
+Un programme cherche donc une corresposndance avec l'ID page et l'ID bouton dans la liste des boutons ci-dessus.
+```c++
+for (size_t i = 0; i < bsize; i++) {
+  if (buttons[i].pageId == pageId && buttons[i].buttonId == buttonId) {
+    buttons[i].button_func();
+  }
+```
