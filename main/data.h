@@ -8,6 +8,7 @@
 #define OpenLogTX 3
 #define OpenLogReset 4
 
+#define TIMEOUT_DELAY 3000
 
 void InitData();
 void CleanTo(char c);
