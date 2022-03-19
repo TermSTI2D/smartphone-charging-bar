@@ -23,7 +23,7 @@
  * Variables :  239   / 2048   (11%)
 \******************************************/
 
-#define DEBUG_MODE 1
+#define DEBUG_MODE 0
 
 // Motors
 motor Screw;
@@ -31,20 +31,20 @@ motor Platform;
 
 #include "data.h"
 void setup() {
-//#if DEBUG_MODE == 1
+#if DEBUG_MODE == 1
   Serial.begin(9600);
   Serial.println("Starting");
 
-  //InitData();
-  //SaveData("f"+String(analogRead(A1))+".txt", "position");
-//#else
+  InitData();
+  SaveData("f"+String(analogRead(A1))+".txt", "position");
+#else
   Serial.begin(9600);
   Serial.println("Starting");
 
   InitMotors(Screw, Platform);
   InitManagement();
   InitScreen();
-//#endif
+#endif
 }
 
 
