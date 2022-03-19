@@ -24,6 +24,7 @@ Button buttons[] = {
   { 4, 3, []() { writePassword("erase"); } }, //Btn (Effacer : Page ajouter un code)
   { 4, 4, []() { writePassword("0"); } }, //Btn (0 : Page ajouter un code)
   { 4, 5, []() { writePassword("1"); } }, //Btn (1 : Page ajouter un code)
+  { 4, 6, []() { writePassword("2"); } }, //Btn (2 : Page ajouter un code)
 };
 
 size_t bsize = sizeof(buttons) / sizeof(Button);
@@ -53,13 +54,14 @@ void searchButton(int pageId,int buttonId){
   for (size_t i = 0; i < bsize; i++) {
     if (buttons[i].pageId == pageId && buttons[i].buttonId == buttonId) {
       buttons[i].button_func();
+      break;
     }
   }
 }
 
 void ReceiveDataNextion(){
-  delay(100);
   if  (nextionSerial.available()){
+    delay(100);
     for (int i = 0; i < 7; i++) {
       messageReceived[i] = nextionSerial.read();
     }
@@ -135,7 +137,6 @@ String Password(int page){
   }
   while(!passwordConfirmation && writePasswordVar.length() != 4){
     ReceiveDataNextion();
-    sendCommandFromSerial();
     delay(10);
   }
   Serial.println("Debug : Sortie de boucle");
@@ -148,13 +149,10 @@ String writePassword(String actionOrNumber){
     int length=writePasswordVar.length();
     writePasswordVar.setCharAt(length-1,'\t');
     writePasswordVar.trim();
-    Serial.println("Supprimer");
     SendDataNextion("password.txt=", "\"" + writePasswordVar + "\"");
-
   }
   else{
     writePasswordVar = writePasswordVar + actionOrNumber;
-    Serial.println("Debug : ajout de : " + String(actionOrNumber));
     SendDataNextion("password.txt=", "\"" + writePasswordVar + "\"");
   }
 }
