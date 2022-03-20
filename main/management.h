@@ -21,7 +21,7 @@ byte GetAimedPos();
 void LoadPhones();
 void SavePhones();
 
-void RegisterPhone(byte id, String password);
-void RecoverPhone(byte id);
+bool RegisterPhone(byte id, String password);
+bool RecoverPhone(byte id);
 
 #endif

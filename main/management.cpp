@@ -70,10 +70,27 @@ void SavePhones() {
   SaveData("phones.txt", phonestxt);
 }
 
-void RegisterPhone(byte id, String password) {
-  SavePhones();
+bool RegisterPhone(byte id, String password) {
+  Phone *p = &phones[id];
+
+  if (p->isEmpty) {
+    p->isEmpty = false;
+    password.toCharArray(p->password, 5);
+    
+    SavePhones();
+    return true;
+  }
+  return false;
 }
 
-void RecoverPhone(byte id) {
-  SavePhones();
+bool RecoverPhone(byte id) {
+  Phone *p = &phones[id];
+
+  if (!p->isEmpty) {
+    p->isEmpty = true;
+    strcpy(p->password, "0000");
+    SavePhones();
+    return true;
+  }
+  return false;
 }
