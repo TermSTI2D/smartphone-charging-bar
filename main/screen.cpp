@@ -54,7 +54,6 @@ void searchButton(int pageId,int buttonId){
   for (size_t i = 0; i < bsize; i++) {
     if (buttons[i].pageId == pageId && buttons[i].buttonId == buttonId) {
       buttons[i].button_func();
-      break;
     }
   }
 }
@@ -71,6 +70,7 @@ void ReceiveDataNextion(){
     for (int i = 0; i < 7; i++) {
       Serial.print("   Data" + String(i) + " : " + messageReceived[i]);
     }
+    delay(100);
     if(messageReceived[0]==101){
       searchButton(messageReceived[1],messageReceived[2]);
     }
@@ -119,8 +119,8 @@ void sendCommandFromSerial(){
 \******************************************/
 
 String Password(int page){
-  writePasswordVar = "";
-  SendDataNextion("password.txt=", "\"" + writePasswordVar + "\"");
+  writePasswordVar = " ";
+  writePassword("erase");
   switch (page) {
     case 1:
       //Create password
@@ -135,16 +135,16 @@ String Password(int page){
       SendDataNextion("page", "13");
       break;
   }
-  while(!passwordConfirmation && writePasswordVar.length() != 4){
-    ReceiveDataNextion();
-    delay(10);
-  }
-  Serial.println("Debug : Sortie de boucle");
+  // while(!passwordConfirmation && writePasswordVar.length() != 4){
+  //   ReceiveDataNextion();
+  //   delay(10);
+  // }
   passwordConfirmation == false;
   return writePasswordVar;
 }
 
 String writePassword(String actionOrNumber){
+  delay(100);
   if(actionOrNumber == "erase"){
     int length=writePasswordVar.length();
     writePasswordVar.setCharAt(length-1,'\t');
@@ -152,22 +152,24 @@ String writePassword(String actionOrNumber){
     SendDataNextion("password.txt=", "\"" + writePasswordVar + "\"");
   }
   else{
+    delay(100);
     writePasswordVar = writePasswordVar + actionOrNumber;
-    SendDataNextion("password.txt=", "\"" + writePasswordVar + "\"");
+    delay(100);
+    delay(100);
+    //SendDataNextion("password.txt=", "\"" + writePasswordVar + "\"");
+    delay(100);
   }
 }
+
 
 //Function AddPhone
 //Type : wireless, cable
 void addPhone(String type){
   String password = "";
   password = Password(1);
-  Serial.println("(Debug) : Sortie de la boucle 2eme fois");
 }
 
 //Function RecoverPhone
 void recoverPhone(){
 
 }
-
-
