@@ -28,6 +28,8 @@ void InitData() {
       break;
     }
   }
+
+  OpenLog.setTimeout(150);
 }
 
 
@@ -92,8 +94,12 @@ String LoadData(String filename, String baseValue) {
     txt = OpenLog.readString();
   }
 
-  txt.remove(txt.indexOf('>'));
-  txt.trim();
+  size_t index = txt.lastIndexOf('>');
+  if (index != -1) {
+    isComReady = true;
+    txt.remove(index);
+    txt.trim();
+  }
   
   return txt;
 }
