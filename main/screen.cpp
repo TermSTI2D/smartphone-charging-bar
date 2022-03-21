@@ -118,47 +118,47 @@ void sendCommandFromSerial(){
  * 3 : verify (recover smartphone)
 \******************************************/
 
-String Password(int page){
-  writePasswordVar = " ";
-  writePassword("erase");
-  switch (page) {
-    case 1:
-      //Create password
-      SendDataNextion("page", "4");
-      break;
-    case 2:
-      //Confirm password
-      SendDataNextion("page", "5");
-      break;
-    case 3:
-      //Verify password
-      SendDataNextion("page", "13");
-      break;
-  }
-  // while(!passwordConfirmation && writePasswordVar.length() != 4){
-  //   ReceiveDataNextion();
-  //   delay(10);
-  // }
-  passwordConfirmation == false;
-  return writePasswordVar;
-}
+// String Password(int page){
+//   writePasswordVar = " ";
+//   writePassword("erase");
+//   switch (page) {
+//     case 1:
+//       //Create password
+//       SendDataNextion("page", "4");
+//       break;
+//     case 2:
+//       //Confirm password
+//       SendDataNextion("page", "5");
+//       break;
+//     case 3:
+//       //Verify password
+//       SendDataNextion("page", "13");
+//       break;
+//   }
+//   passwordConfirmation == false;
+//   return writePasswordVar;
+// }
+
+// String writePassword(String actionOrNumber){
+//   delay(100);
+//   if(actionOrNumber == "erase"){
+//     int length=writePasswordVar.length();
+//     writePasswordVar.setCharAt(length-1,'\t');
+//     writePasswordVar.trim();
+//     SendDataNextion("password.txt=", "\"" + writePasswordVar + "\"");
+//   }
+//   else{
+//     delay(100);
+//     writePasswordVar = writePasswordVar + actionOrNumber;
+//     delay(100);
+//     delay(100);
+//     //SendDataNextion("password.txt=", "\"" + writePasswordVar + "\"");
+//     delay(100);
+//   }
+// }
 
 String writePassword(String actionOrNumber){
-  delay(100);
-  if(actionOrNumber == "erase"){
-    int length=writePasswordVar.length();
-    writePasswordVar.setCharAt(length-1,'\t');
-    writePasswordVar.trim();
-    SendDataNextion("password.txt=", "\"" + writePasswordVar + "\"");
-  }
-  else{
-    delay(100);
-    writePasswordVar = writePasswordVar + actionOrNumber;
-    delay(100);
-    delay(100);
-    //SendDataNextion("password.txt=", "\"" + writePasswordVar + "\"");
-    delay(100);
-  }
+  Serial.print("L'action a ete : " + actionOrNumber);
 }
 
 
@@ -166,7 +166,8 @@ String writePassword(String actionOrNumber){
 //Type : wireless, cable
 void addPhone(String type){
   String password = "";
-  password = Password(1);
+  SendDataNextion("page", "4");
+  // password = Password(1);
 }
 
 //Function RecoverPhone
