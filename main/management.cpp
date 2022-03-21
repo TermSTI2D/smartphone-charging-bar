@@ -15,8 +15,8 @@ Phone phones[8] = {
 
 void InitManagement() {
   // Load data
-  Serial.println( sizeof(Phone) );
-  Serial.println(phones[0].isEmpty);
+  //Serial.println( sizeof(Phone) );
+  //Serial.println(phones[0].isEmpty);
 
   LoadPhones();
   //SavePhones();
@@ -26,6 +26,8 @@ void InitManagement() {
     Serial.print(String(i) + ": " + String(p.id) + " " + String(p.isEmpty) + " " + p.password);
     Serial.println("");
   }
+
+  Serial.println("Loaded");
 }
 
 void SetAimedPos(byte newPos) {

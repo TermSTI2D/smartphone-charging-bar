@@ -7,6 +7,7 @@
 #include "motors.h"
 #include "management.h"
 #include "screen.h"
+#include "data.h"
 
 /******************************************\
  *          How program work
@@ -23,28 +24,31 @@
  * Variables :  564   / 2048   (27%)
 \******************************************/
 
-#define DEBUG_MODE 0
+#define DEBUG_MODE 1
+#define FINAL_PRINT 1
 
 // Motors
 motor Screw;
 motor Platform;
 
-#include "data.h"
 void setup() {
-// #if DEBUG_MODE == 1
-//   Serial.begin(9600);
-//   Serial.println("Starting");
+#if DEBUG_MODE == 1
+  // Code de test
+  
+#elif
+  // Code du projet final
 
-//   InitData();
-//   SaveData("f"+String(analogRead(A1))+".txt", "position");
-// #else
-  Serial.begin(9600);
+#if FINAL_PRINT == 1
+  Serial.println(9600);
   Serial.println("Starting");
+#endif
 
-  //InitMotors(Screw, Platform);
-  //InitManagement();
+  // Inits
+  InitData();
+  InitMotors();
+  InitManagement();
   InitScreen();
-// #endif
+#endif
 }
 
 
