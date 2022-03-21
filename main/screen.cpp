@@ -20,11 +20,18 @@ Button buttons[] = {
   { 2, 2, []() { SendDataNextion("page", "3"); } }, //Btn (Ajouter son smartphone)
   { 3, 2, []() { addPhone("wireless"); } }, //Btn (Recharge sans fil)
   { 3, 3, []() { addPhone("cable"); } }, //Btn (Recharge filaire)
-  { 4, 2, []() { passwordConfirmation = true; } }, //Btn (Valider : Page ajouter un code)
+  { 4, 2, []() { SendDataNextion("page", "4"); } }, //Btn (Valider : Page ajouter un code) // A améliroer
   { 4, 3, []() { writePassword("erase"); } }, //Btn (Effacer : Page ajouter un code)
   { 4, 4, []() { writePassword("0"); } }, //Btn (0 : Page ajouter un code)
   { 4, 5, []() { writePassword("1"); } }, //Btn (1 : Page ajouter un code)
   { 4, 6, []() { writePassword("2"); } }, //Btn (2 : Page ajouter un code)
+  { 4, 7, []() { writePassword("3"); } }, //Btn (3 : Page ajouter un code)
+  { 4, 8, []() { writePassword("4"); } }, //Btn (4 : Page ajouter un code)
+  { 4, 9, []() { writePassword("5"); } }, //Btn (5 : Page ajouter un code)
+  { 4, 10, []() { writePassword("6"); } }, //Btn (6 : Page ajouter un code)
+  { 4, 11, []() { writePassword("7"); } }, //Btn (7 : Page ajouter un code)
+  { 4, 12, []() { writePassword("8"); } }, //Btn (8 : Page ajouter un code)
+  { 4, 13, []() { writePassword("9"); } }, //Btn (9 : Page ajouter un code)
 };
 
 size_t bsize = sizeof(buttons) / sizeof(Button);
@@ -54,13 +61,14 @@ void searchButton(int pageId,int buttonId){
   for (size_t i = 0; i < bsize; i++) {
     if (buttons[i].pageId == pageId && buttons[i].buttonId == buttonId) {
       buttons[i].button_func();
+      break;
     }
   }
 }
 
 void ReceiveDataNextion(){
   if  (nextionSerial.available()){
-    delay(100);
+    delay(10);
     for (int i = 0; i < 7; i++) {
       messageReceived[i] = nextionSerial.read();
     }
@@ -139,35 +147,25 @@ void sendCommandFromSerial(){
 //   return writePasswordVar;
 // }
 
-// String writePassword(String actionOrNumber){
-//   delay(100);
-//   if(actionOrNumber == "erase"){
-//     int length=writePasswordVar.length();
-//     writePasswordVar.setCharAt(length-1,'\t');
-//     writePasswordVar.trim();
-//     SendDataNextion("password.txt=", "\"" + writePasswordVar + "\"");
-//   }
-//   else{
-//     delay(100);
-//     writePasswordVar = writePasswordVar + actionOrNumber;
-//     delay(100);
-//     delay(100);
-//     //SendDataNextion("password.txt=", "\"" + writePasswordVar + "\"");
-//     delay(100);
-//   }
-// }
-
-String writePassword(String actionOrNumber){
-  Serial.print("L'action a ete : " + actionOrNumber);
+void writePassword(String actionOrNumber){
+  if(actionOrNumber == "erase"){
+    int length=writePasswordVar.length();
+    writePasswordVar.setCharAt(length-1,'\t');
+    writePasswordVar.trim();
+    SendDataNextion("password.txt=", "\"" + writePasswordVar + "\"");
+  }
+  else{
+    writePasswordVar = writePasswordVar + actionOrNumber;
+    SendDataNextion("password.txt=", "\"" + writePasswordVar + "\"");
+  }
 }
-
 
 //Function AddPhone
 //Type : wireless, cable
 void addPhone(String type){
   String password = "";
   SendDataNextion("page", "4");
-  // password = Password(1);
+  SendDataNextion("password.txt=", "\"" + password + "\"");
 }
 
 //Function RecoverPhone

@@ -33,13 +33,13 @@ motor Platform;
 
 void setup() {
 #if DEBUG_MODE == 1
-  // Code de test
-  
+  Serial.begin(9600);
+  InitScreen();  
 #elif
   // Code du projet final
 
 #if FINAL_PRINT == 1
-  Serial.println(9600);
+  Serial.begin(9600);
   Serial.println("Starting");
 #endif
 
