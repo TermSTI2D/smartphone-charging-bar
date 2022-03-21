@@ -5,7 +5,10 @@
 int messageReceived[7] = {};
 String commandFromSerial = ""; 
 bool passwordConfirmation = false;
+// Add Smartphone
 String writePasswordVar = "";
+String type = "";
+
 #define buttonsLine 1
 #define buttonsColumn 3
 
@@ -78,7 +81,7 @@ void ReceiveDataNextion(){
     for (int i = 0; i < 7; i++) {
       Serial.print("   Data" + String(i) + " : " + messageReceived[i]);
     }
-    delay(100);
+    delay(10);
     if(messageReceived[0]==101){
       searchButton(messageReceived[1],messageReceived[2]);
     }
@@ -119,34 +122,6 @@ void sendCommandFromSerial(){
   }
 }
 
-/******************************************\
- *          Password type page
- * 1 : create
- * 2 : confirm
- * 3 : verify (recover smartphone)
-\******************************************/
-
-// String Password(int page){
-//   writePasswordVar = " ";
-//   writePassword("erase");
-//   switch (page) {
-//     case 1:
-//       //Create password
-//       SendDataNextion("page", "4");
-//       break;
-//     case 2:
-//       //Confirm password
-//       SendDataNextion("page", "5");
-//       break;
-//     case 3:
-//       //Verify password
-//       SendDataNextion("page", "13");
-//       break;
-//   }
-//   passwordConfirmation == false;
-//   return writePasswordVar;
-// }
-
 void writePassword(String actionOrNumber){
   if(actionOrNumber == "erase"){
     int length=writePasswordVar.length();
@@ -162,10 +137,14 @@ void writePassword(String actionOrNumber){
 
 //Function AddPhone
 //Type : wireless, cable
-void addPhone(String type){
+void addPhone(String _type){
+  type = _type;
   String password = "";
   SendDataNextion("page", "4");
   SendDataNextion("password.txt=", "\"" + password + "\"");
+  //Tant que 
+  //Cofirmation
+  
 }
 
 //Function RecoverPhone
