@@ -4,7 +4,7 @@
 // Variables
 int messageReceived[7] = {};
 String commandFromSerial = ""; 
-bool passwordConfirmation = false;
+String password = "";
 // Add Smartphone
 String writePasswordVar = "";
 String type = "";
@@ -23,7 +23,7 @@ Button buttons[] = {
   { 2, 2, []() { SendDataNextion("page", "3"); } }, //Btn (Ajouter son smartphone)
   { 3, 2, []() { addPhone("wireless"); } }, //Btn (Recharge sans fil)
   { 3, 3, []() { addPhone("cable"); } }, //Btn (Recharge filaire)
-  { 4, 2, []() { SendDataNextion("page", "4"); } }, //Btn (Valider : Page ajouter un code) // A améliroer
+  { 4, 2, []() { validatePassword(); } }, //Btn (Valider : Page ajouter un code) // A améliroer
   { 4, 3, []() { writePassword("erase"); } }, //Btn (Effacer : Page ajouter un code)
   { 4, 4, []() { writePassword("0"); } }, //Btn (0 : Page ajouter un code)
   { 4, 5, []() { writePassword("1"); } }, //Btn (1 : Page ajouter un code)
@@ -122,16 +122,41 @@ void sendCommandFromSerial(){
   }
 }
 
+// Write password
 void writePassword(String actionOrNumber){
-  if(actionOrNumber == "erase"){
-    int length=writePasswordVar.length();
-    writePasswordVar.setCharAt(length-1,'\t');
-    writePasswordVar.trim();
-    SendDataNextion("password.txt=", "\"" + writePasswordVar + "\"");
+    if(actionOrNumber == "erase"){
+      int length=writePasswordVar.length();
+      writePasswordVar.setCharAt(length-1,'\t');
+      writePasswordVar.trim();
+      SendDataNextion("passwordTxt.txt=", "\"" + writePasswordVar + "\"");
+    }
+    else if(writePasswordVar.length() < 4){
+      writePasswordVar = writePasswordVar + actionOrNumber;
+      SendDataNextion("passwordTxt.txt=", "\"" + writePasswordVar + "\"");
+    }
+}
+
+// Validate password
+void validatePassword(){
+  if(writePasswordVar.length() < 4){
+    SendDataNextion("errorMessage.txt=", "\"Votre code doit disposer de 4 chiffres.\"");
+  }
+  else if(writePasswordVar == "1234" || writePasswordVar == "0000"){
+    SendDataNextion("errorMessage.txt=", "\"Votre code n'est pas assez fort.\"");
   }
   else{
-    writePasswordVar = writePasswordVar + actionOrNumber;
-    SendDataNextion("password.txt=", "\"" + writePasswordVar + "\"");
+    SendDataNextion("errorMessage.txt=", "\"\"");
+  }
+}
+
+// Confirm password
+void confirmPassword(){
+  if(writePasswordVar == password){
+    SendDataNextion("page", "6");
+    // Tortue : C'est ici pour mettres les moteurs
+  }
+  else{
+    SendDataNextion("errorMessage.txt=", "\"Votre code est incorrect.\"");
   }
 }
 
@@ -139,15 +164,19 @@ void writePassword(String actionOrNumber){
 //Type : wireless, cable
 void addPhone(String _type){
   type = _type;
-  String password = "";
+  password = "";
   SendDataNextion("page", "4");
-  SendDataNextion("password.txt=", "\"" + password + "\"");
-  //Tant que 
-  //Cofirmation
-  
+  SendDataNextion("passwordTxt.txt=", "\"" + password + "\"");
+  SendDataNextion("title.txt=", "\" Ajouter un code \"");
+  SendDataNextion("description.txt=", "\" Vous devrez retenir ce code pour récupérer votre smartphone. \"");
 }
 
 //Function RecoverPhone
 void recoverPhone(){
+}
 
+void endProcess(){
+  String password = "";
+  SendDataNextion("page", "0");
+  writePasswordVar = "";
 }

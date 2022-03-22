@@ -10,9 +10,12 @@ void ReceiveDataNextion();
 void SendDataNextion(String action, String value);
 void sendCommandFromSerial();
 void writePassword(String actionOrNumber);
+void validatePassword();
+void validatePassword();
+void confirmPassword();
 void addPhone(String type);
 void recoverPhone();
-
+void endProcess();
 
 
 
