@@ -1,3 +1,18 @@
+/****************************************************\
+ *          Gestion des donnees
+ * Initialisation par InitData
+ *    Init la carte SD
+ *
+ * SaveData ( filename, donnees ) <- Necessite la carte SD
+ *    Sauvergarde les 'donnees' dans
+ *    le fichier nomme 'filename'
+ *
+ * LoadData( filename, basevalue ) <- Necessite la carte SD
+ *    Charge les donnees du fichier
+ *    'filename' et renvoie 'basevalue'
+ *    si le fichier n'est pas trouvé
+\****************************************************/
+
 #include "data.h"
 
 SoftwareSerial OpenLog(OpenLogRX, OpenLogTX);
