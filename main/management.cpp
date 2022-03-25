@@ -1,3 +1,9 @@
+/****************************************************\
+ *          Gestion des téléphones
+ * Script non fini
+ *  \-> Doit finir le système d'attribution
+\****************************************************/
+
 #include "management.h"
 
 byte _aimedPos = 0;
