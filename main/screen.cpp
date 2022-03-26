@@ -5,6 +5,7 @@
 int messageReceived[7] = {};
 String commandFromSerial = ""; 
 String password = "";
+byte process = 0; //0 = none, 1 = add, 2 = recvoer
 // Add Smartphone
 String writePasswordVar = "";
 String type = "";
@@ -146,6 +147,18 @@ void validatePassword(){
   }
   else{
     SendDataNextion("errorMessage.txt=", "\"\"");
+    if(process == 1){
+      if(password == ""){
+        password = writePasswordVar;
+        writePasswordVar = "";
+        SendDataNextion("passwordTxt.txt=", "\"" + writePasswordVar + "\"");
+        SendDataNextion("title.txt=", "\" Confirmer le code \"");
+        SendDataNextion("description.txt=", "\" Vous devez ressaisir votre code. \"");      
+      }
+      else{
+        confirmPassword();
+      }
+    }
   }
 }
 
@@ -165,10 +178,11 @@ void confirmPassword(){
 void addPhone(String _type){
   type = _type;
   password = "";
+  process = 1;
   SendDataNextion("page", "4");
   SendDataNextion("passwordTxt.txt=", "\"" + password + "\"");
   SendDataNextion("title.txt=", "\" Ajouter un code \"");
-  SendDataNextion("description.txt=", "\" Vous devrez retenir ce code pour récupérer votre smartphone. \"");
+  SendDataNextion("description.txt=", "\" Vous devrez retenir ce code pour recuperer votre smartphone. \"");
 }
 
 //Function RecoverPhone
@@ -179,4 +193,5 @@ void endProcess(){
   String password = "";
   SendDataNextion("page", "0");
   writePasswordVar = "";
+  process = 0;
 }
