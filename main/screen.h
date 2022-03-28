@@ -15,6 +15,7 @@ void validatePassword();
 void confirmPassword();
 void addPhone(String type);
 void recoverPhone();
+void showLastPages(byte action);
 void endProcess();
 
 

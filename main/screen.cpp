@@ -36,6 +36,9 @@ Button buttons[] = {
   { 4, 11, []() { writePassword("7"); } }, //Btn (7 : Page ajouter un code)
   { 4, 12, []() { writePassword("8"); } }, //Btn (8 : Page ajouter un code)
   { 4, 13, []() { writePassword("9"); } }, //Btn (9 : Page ajouter un code)
+  { 5, 2, []() { showLastPages(1); } }, //Btn (Ok ! page ID)
+  { 8, 1, []() { endProcess(); } }, //Btn (Ok ! page ID)
+
 };
 
 size_t bsize = sizeof(buttons) / sizeof(Button);
@@ -165,8 +168,17 @@ void validatePassword(){
 // Confirm password
 void confirmPassword(){
   if(writePasswordVar == password){
-    SendDataNextion("page", "6");
-    // Tortue : C'est ici pour mettres les moteurs
+    //Give ID
+    SendDataNextion("page", "5");
+    SendDataNextion("id.val=", "2"); //Le 2 est à remplacer par une fonction d'ID
+    // Tortue : C'est ici pour mettres le l'ID
+
+    // C'est provisoir !!
+    delay(2000);
+    showLastPages(2);
+    delay(2000);
+    showLastPages(3);
+
   }
   else{
     SendDataNextion("errorMessage.txt=", "\"Votre code est incorrect.\"");
@@ -188,6 +200,26 @@ void addPhone(String _type){
 //Function RecoverPhone
 void recoverPhone(){
 }
+
+// Function 
+//  1 = ouverturePorte, 2 = Rocov/Place, 3 = message 
+void showLastPages(byte action){ 
+  if(action == 1){
+    SendDataNextion("page", "6");
+  }
+  else if(action == 2 && process == 1){
+    SendDataNextion("page", "7");
+  }
+  else if(action == 2 && process == 2){
+    SendDataNextion("page", "9");
+  }
+  else if(action == 3 && process == 1){
+    SendDataNextion("page", "8");
+  }
+  else if(action == 3 && process == 2){
+    SendDataNextion("page", "14");
+  }
+} 
 
 void endProcess(){
   String password = "";
