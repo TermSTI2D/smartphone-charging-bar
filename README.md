@@ -1,5 +1,6 @@
 # Station de recharge pour smartphone📱
 La station de recharge pour smartphone est un projet de terminale (STI2D). Il consiste à pouvoir accueillir des smartphones (de tous genres) pour une recharge simple, rapide et sécurisé. Le projet doit être fondé sur "une autonomie énergétique".
+
 ## Communication Arduino - Nextion
 ### Envoyer des commandes 
 Pour envoyer des commandes à lécran Nextion, il faut créer un SerialPort. Ici ils sont sur les pins : ```10``` et ```11```.
@@ -76,4 +77,34 @@ for (size_t i = 0; i < bsize; i++) {
   if (buttons[i].pageId == pageId && buttons[i].buttonId == buttonId) {
     buttons[i].button_func();
   }
+```
+
+## Mot de passe
+### Commnication Ecran -> Arduino
+Une page Mot de passe unique à été créé pour choisir, confirmer et entrer un mot de passe.
+<br/>
+Une fonction à été créé pour recevoir l'action demandé par l'écran.
+```c++
+void writePassword(String actionOrNumber){
+  // Code 
+}
+```
+```String actionOrNumber``` correspond à l'action demandé par l'écran.	
+<br/>
+Le programme applique ensuite l'action demandé par l'écran.
+<br/>
+<br/>
+D'autres programmes se chargent de vérifier si le mot de passe est correct et si il peut être validé.
+```c++	
+void validatePassword(){
+  if(writePasswordVar.length() < 4){
+    // Code
+  }
+  else if(writePasswordVar == "1234" || writePasswordVar == "0000"){
+    // Code
+  }
+  else{
+    // Envoyer le mot de passe.
+  }
+}
 ```
