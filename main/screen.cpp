@@ -5,6 +5,7 @@
 int messageReceived[7] = {};
 String commandFromSerial = ""; 
 String password = "";
+String id ="";
 byte process = 0; //0 = none, 1 = add, 2 = recvoer
 // Add Smartphone
 String writePasswordVar = "";
@@ -37,8 +38,21 @@ Button buttons[] = {
   { 4, 12, []() { writePassword("8"); } }, //Btn (8 : Page ajouter un code)
   { 4, 13, []() { writePassword("9"); } }, //Btn (9 : Page ajouter un code)
   { 5, 2, []() { showLastPages(1); } }, //Btn (Ok ! page ID)
-  { 8, 1, []() { endProcess(); } }, //Btn (Ok ! page ID)
-
+  { 8, 1, []() { endProcess(); } }, //Btn (Retour à l'acceuil)
+  { 0, 4, []() { SendDataNextion("page", "9"); } }, //Btn Récupérer smartphone
+  { 9, 2, []() { recoverPhone(); } }, //Btn Récupérer smartphone
+  // WriteId
+  { 10, 1, []() { writeId("1"); } }, //Btn "1"
+  { 10, 2, []() { writeId("2"); } }, //Btn "2"
+  { 10, 3, []() { writeId("3"); } }, //Btn "3"
+  { 10, 4, []() { writeId("4"); } }, //Btn "4"
+  { 10, 5, []() { writeId("5"); } }, //Btn "5"
+  { 10, 6, []() { writeId("6"); } }, //Btn "6"
+  { 10, 7, []() { writeId("7"); } }, //Btn "7"
+  { 10, 8, []() { writeId("8"); } }, //Btn "8"
+  { 10, 10, []() { writeId("erase"); } }, //Btn "erase"
+  { 10, 9, []() { confirmId(); } }, //Btn "ok"
+  { 14, 1, []() { endProcess(); } }, //Btn (Retour à l'acceuil)
 };
 
 size_t bsize = sizeof(buttons) / sizeof(Button);
@@ -132,12 +146,24 @@ void writePassword(String actionOrNumber){
       int length=writePasswordVar.length();
       writePasswordVar.setCharAt(length-1,'\t');
       writePasswordVar.trim();
-      SendDataNextion("passwordTxt.txt=", "\"" + writePasswordVar + "\"");
     }
     else if(writePasswordVar.length() < 4){
       writePasswordVar = writePasswordVar + actionOrNumber;
-      SendDataNextion("passwordTxt.txt=", "\"" + writePasswordVar + "\"");
     }
+  SendDataNextion("passwordTxt.txt=", "\"" + writePasswordVar + "\"");
+}
+
+// Write Id
+void writeId(String actionOrNumber){
+    if(actionOrNumber == "erase"){
+      int length=id.length();
+      id.setCharAt(length-1,'\t');
+      id.trim();
+    }
+    else if(id.length() < 1){
+      id = id + actionOrNumber;
+    }
+  SendDataNextion("idTxt.txt=", "\"" + id + "\"");
 }
 
 // Validate password
@@ -145,7 +171,7 @@ void validatePassword(){
   if(writePasswordVar.length() < 4){
     SendDataNextion("errorMessage.txt=", "\"Votre code doit disposer de 4 chiffres.\"");
   }
-  else if(writePasswordVar == "1234" || writePasswordVar == "0000"){
+  else if(writePasswordVar == "1234" && process == 1 || writePasswordVar == "0000" && process == 1){
     SendDataNextion("errorMessage.txt=", "\"Votre code n'est pas assez fort.\"");
   }
   else{
@@ -162,6 +188,14 @@ void validatePassword(){
         confirmPassword();
       }
     }
+    else if(process == 2){
+      if(writePasswordVar == writePasswordVar){ // Tortue : Ici pour vérifier si mot de passe correspond à ID
+        recoveryProcess();
+      }
+      else{
+        SendDataNextion("errorMessage.txt=", "\"Votre code n'est pas bon.\"");
+      }  
+    }
   }
 }
 
@@ -175,13 +209,30 @@ void confirmPassword(){
 
     // C'est provisoir !!
     delay(2000);
-    showLastPages(2);
+    showLastPages(1); // Page "Ouverture porte"
     delay(2000);
-    showLastPages(3);
+    showLastPages(2); // Page "vous pouvez placer votre smartphone"
+    delay(2000);
+    showLastPages(3); // Page "Remerciement"
 
   }
   else{
     SendDataNextion("errorMessage.txt=", "\"Votre code est incorrect.\"");
+  }
+}
+
+// Confirm ID
+
+void confirmId(){
+  if(id.length() == 1 && id == id){ //Tortue : Ici pour tester si ID ets dans la liste
+    SendDataNextion("page", "4");
+    SendDataNextion("passwordTxt.txt=", "\"" + password + "\"");
+    SendDataNextion("title.txt=", "\" Quel est votre code ? \"");
+    SendDataNextion("description.txt=", "\" Votre mot de passe correspond a celui que vous avez entre au depot de votre smartphone. \"");
+
+  }
+  else{
+    SendDataNextion("errorMessage.txt=", "\"l'Id est incorrect.\"");
   }
 }
 
@@ -199,6 +250,21 @@ void addPhone(String _type){
 
 //Function RecoverPhone
 void recoverPhone(){
+  process = 2;
+  id = "";
+  password = "";
+  SendDataNextion("page", "10");
+}
+// Function Recovery process
+
+void recoveryProcess(){
+  SendDataNextion("page", "12"); //Page "Votre téléphone arrive"
+  delay(2000);
+  showLastPages(1);
+  delay(2000);
+  showLastPages(2);
+  delay(2000);
+  showLastPages(3);
 }
 
 // Function 
@@ -211,7 +277,7 @@ void showLastPages(byte action){
     SendDataNextion("page", "7");
   }
   else if(action == 2 && process == 2){
-    SendDataNextion("page", "9");
+    SendDataNextion("page", "13");
   }
   else if(action == 3 && process == 1){
     SendDataNextion("page", "8");
@@ -226,4 +292,6 @@ void endProcess(){
   SendDataNextion("page", "0");
   writePasswordVar = "";
   process = 0;
+  id = "";
+  password = "";
 }
