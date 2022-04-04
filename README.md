@@ -79,9 +79,9 @@ for (size_t i = 0; i < bsize; i++) {
   }
 ```
 
-## Mot de passe
-### Commnication Ecran -> Arduino
-Une page Mot de passe unique à été créé pour choisir, confirmer et entrer un mot de passe.
+## Code et identifiant
+### Code
+Une page Code unique à été créé pour choisir, confirmer et entrer un mot de passe.
 <br/>
 Une fonction à été créé pour recevoir l'action demandé par l'écran.
 ```c++
@@ -107,4 +107,58 @@ void validatePassword(){
     // Envoyer le mot de passe.
   }
 }
+```
+### Identifiant
+La page identifiant fonctionne du même mécanisme que la page code.
+<br/>
+L'identifiant est donné lorsque l'utilisateur ajoute un smartphone et il doit le saisir pour pouvoir le retirer.
+```c++
+void confirmId(){
+  if(id.length() == 1 && id == idDansLaListe){ //Tortue : Ici pour tester si ID ets dans la liste
+    SendDataNextion("page", "4");
+  }
+  else{
+    SendDataNextion("errorMessage.txt=", "\"l'Id est incorrect.\"");
+  }
+}
+```
+La page suivante demande le code correspondant à l'identifiant. (Même page que pour ajouter un code)
+
+## Pages d'actions avec la station
+Une fonction est prévue pour afficher les pages du processus en fonction de la situation. Les fonctions s'occupants de la station n'ont qu'à appeler ces fonctions dès que leur processus est terminé.
+<br/>
+<br/>
+Liste des processus :
+<br/>
+- Le processus ```0``` signifie que l'utilisateur est sur la page d'accueil.
+<br/>
+- Le processus ```1``` signifie que l'utilisateur est daans le processus d'ajout d'un smartphone.
+<br/>
+- Le processus ```2``` signifie que l'utilisateur est dans le processus de récupération d'un smartphone.
+
+Liste des actions :
+<br/>
+- L'action ```1``` correspond à l'ouverture de la porte.
+<br/>
+- L'action ```2``` correspond à la page demandant à l'utilisateur de récupérer ou placer son smartphone.
+<br/>
+- L'action ```3``` correspond à la page qui affiche le message de remerciement.
+```c++
+void showLastPages(byte action){ 
+  if(action == 1){
+    SendDataNextion("page", "6");
+  }
+  else if(action == 2 && process == 1){
+    SendDataNextion("page", "7");
+  }
+  else if(action == 2 && process == 2){
+    SendDataNextion("page", "13");
+  }
+  else if(action == 3 && process == 1){
+    SendDataNextion("page", "8");
+  }
+  else if(action == 3 && process == 2){
+    SendDataNextion("page", "14");
+  }
+} 
 ```
