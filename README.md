@@ -131,18 +131,15 @@ Une fonction est prévue pour afficher les pages du processus en fonction de la 
 Liste des processus :
 <br/>
 - Le processus ```0``` signifie que l'utilisateur est sur la page d'accueil.
-<br/>
 - Le processus ```1``` signifie que l'utilisateur est daans le processus d'ajout d'un smartphone.
-<br/>
 - Le processus ```2``` signifie que l'utilisateur est dans le processus de récupération d'un smartphone.
 
 Liste des actions :
 <br/>
 - L'action ```1``` correspond à l'ouverture de la porte.
-<br/>
 - L'action ```2``` correspond à la page demandant à l'utilisateur de récupérer ou placer son smartphone.
-<br/>
 - L'action ```3``` correspond à la page qui affiche le message de remerciement.
+
 ```c++
 void showLastPages(byte action){ 
   if(action == 1){
