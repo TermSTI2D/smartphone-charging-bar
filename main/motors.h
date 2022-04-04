@@ -2,7 +2,7 @@
 #define MOTORS_H
 
 #include <Arduino.h>
-#include "pin.h"
+#include "pins.h"
 #include "data.h"
 
 /* Motor pins ( Enable - In1 - In2 ) */

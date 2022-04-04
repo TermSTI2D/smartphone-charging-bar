@@ -3,6 +3,8 @@
 
 #include <Arduino.h>
 #include <SoftwareSerial.h>
+#include "pins.h"
+
 
 void InitScreen();
 void searchButton(int pageID,int buttonID);
