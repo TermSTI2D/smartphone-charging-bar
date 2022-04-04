@@ -207,7 +207,7 @@ void confirmPassword(){
     SendDataNextion("id.val=", "2"); //Le 2 est à remplacer par une fonction d'ID
     // Tortue : C'est ici pour mettres le l'ID
 
-    // C'est provisoir !!
+    // C'est provisoir !! (donc à enlever après)
     delay(2000);
     showLastPages(1); // Page "Ouverture porte"
     delay(2000);
