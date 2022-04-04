@@ -34,6 +34,7 @@ motor Platform;
 void setup() {
 #if DEBUG_MODE == 1
   Serial.begin(9600);
+  InitMotors(Screw, Platform);
   InitScreen();  
 #elif
   // Code du projet final

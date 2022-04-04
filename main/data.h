@@ -4,9 +4,7 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
 
-#define OpenLogRX 10
-#define OpenLogTX 3
-#define OpenLogReset 4
+#include "pins.h"
 
 #define TIMEOUT_DELAY 3000
 
