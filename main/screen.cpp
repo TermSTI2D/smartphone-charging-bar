@@ -63,7 +63,7 @@ size_t bsize = sizeof(buttons) / sizeof(Button);
 //   {'0','3','SendDataNextion(page, 2)'} //Page ID, Button ID, Function
 // };
 
-SoftwareSerial  nextionSerial(10, 11); // RX, TX
+SoftwareSerial  nextionSerial(screenRx, screenTx); // RX, TX
 
 void InitScreen(){
   Serial.println("--------------------------");

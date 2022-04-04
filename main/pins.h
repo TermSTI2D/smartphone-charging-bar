@@ -2,7 +2,7 @@
 #define PIN_H
 
 // Data
-#define OpenLogRX 10
+#define OpenLogRX 0
 #define OpenLogTX 3
 #define OpenLogReset 4
 
@@ -19,5 +19,8 @@
 #define LSDown 2
 #define LSPlatform 3
 
+// Ecran
+#define screenRx 10
+#define screenTx 11
 
 #endif
