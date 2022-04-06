@@ -166,12 +166,23 @@ void writeId(String actionOrNumber){
   SendDataNextion("idTxt.txt=", "\"" + id + "\"");
 }
 
+// Function that verifies password security 
+
+bool allCharactersSame(String s){
+    int n = s.length();
+    for (int i = 1; i < n; i++)
+        if (s[i] != s[0])
+            return false;
+ 
+    return true;
+}
+
 // Validate password
 void validatePassword(){
   if(writePasswordVar.length() < 4){
     SendDataNextion("errorMessage.txt=", "\"Votre code doit disposer de 4 chiffres.\"");
   }
-  else if(writePasswordVar == "1234" && process == 1 || writePasswordVar == "0000" && process == 1){
+  else if(writePasswordVar == "1234" && process == 1 || writePasswordVar == "0000" && process == 1 || allCharactersSame(writePasswordVar) == true && process == 1){
     SendDataNextion("errorMessage.txt=", "\"Votre code n'est pas assez fort.\"");
   }
   else{

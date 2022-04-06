@@ -13,7 +13,7 @@ void SendDataNextion(String action, String value);
 void sendCommandFromSerial();
 void writePassword(String actionOrNumber);
 void writeId(String actionOrNumber);
-void validatePassword();
+bool allCharactersSame(String s);
 void validatePassword();
 void confirmPassword();
 void confirmId();
