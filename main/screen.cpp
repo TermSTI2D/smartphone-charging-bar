@@ -79,6 +79,7 @@ void InitScreen(){
   nextionSerial.begin(9600);
   Serial.println("nextionSerial port has been set to 9600");
   SendDataNextion("page", "0");
+  SendDataNextion("dims=", "100");
 }
 
 //Search button
