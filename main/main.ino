@@ -31,6 +31,7 @@
 motor Screw;
 motor Platform;
 
+
 void setup() {
 #if DEBUG_MODE == 1
   Serial.begin(9600);
@@ -59,5 +60,8 @@ void loop() {
   //SendDataNextion("locAvailable.val=", "5");
   ReceiveDataNextion();
   sendCommandFromSerial();
+  loop_lower_brightness();
   delay(10);
 }
+
+

@@ -10,6 +10,8 @@ byte process = 0; //0 = none, 1 = add, 2 = recvoer
 // Add Smartphone
 String writePasswordVar = "";
 String type = "";
+int brightness = 100;
+int last_touch = 0;
 
 #define buttonsLine 1
 #define buttonsColumn 3
@@ -21,6 +23,7 @@ struct Button {
 };
 
 Button buttons[] = {
+  { 0, 0, []() { last_touch = 0; } }, //Btn (Recharger son smartphone)
   { 0, 3, []() { SendDataNextion("page", "2"); } }, //Btn (Recharger son smartphone)
   { 2, 2, []() { SendDataNextion("page", "3"); } }, //Btn (Ajouter son smartphone)
   { 3, 2, []() { addPhone("wireless"); } }, //Btn (Recharge sans fil)
@@ -37,6 +40,7 @@ Button buttons[] = {
   { 4, 11, []() { writePassword("7"); } }, //Btn (7 : Page ajouter un code)
   { 4, 12, []() { writePassword("8"); } }, //Btn (8 : Page ajouter un code)
   { 4, 13, []() { writePassword("9"); } }, //Btn (9 : Page ajouter un code)
+  { 4, 17, []() { popup(1, writePasswordVar); } }, //Btn return 
   { 5, 2, []() { showLastPages(1); } }, //Btn (Ok ! page ID)
   { 8, 1, []() { endProcess(); } }, //Btn (Retour à l'acceuil)
   { 0, 4, []() { SendDataNextion("page", "9"); } }, //Btn Récupérer smartphone
@@ -53,6 +57,8 @@ Button buttons[] = {
   { 10, 10, []() { writeId("erase"); } }, //Btn "erase"
   { 10, 9, []() { confirmId(); } }, //Btn "ok"
   { 14, 1, []() { endProcess(); } }, //Btn (Retour à l'acceuil)
+  { 15, 2, []() { popup(0, writePasswordVar); } }, //Btn continuer
+  { 15, 1, []() { endProcess(); } }, //Btn annuler
 };
 
 size_t bsize = sizeof(buttons) / sizeof(Button);
@@ -305,4 +311,54 @@ void endProcess(){
   process = 0;
   id = "";
   password = "";
+  last_touch = 0;
+}
+
+
+// Action 0 = close, 1 = open
+void popup(int action, String pass){
+  // If it's page pass confirmation
+  if(process == 1 && password != ""){
+    addPhone(type);
+    return;
+  }
+  if(action == 0){
+    SendDataNextion("page", "4");
+    Serial.println("la");
+
+  }
+  else if(action == 1){
+    SendDataNextion("page", "15");
+  }
+  switch(process){
+    case 1:
+      SendDataNextion("title.txt=", "\" Ajouter un code \"");
+      SendDataNextion("description.txt=", "\" Vous devrez retenir ce code pour recuperer votre smartphone. \"");
+      break;
+    case 2:
+      SendDataNextion("title.txt=", "\" Quel est votre code ? \"");
+      SendDataNextion("description.txt=", "\" Votre code correspond a celui que vous avez entre au depot de votre smartphone. \"");
+      break;
+  }
+  SendDataNextion("passwordTxt.txt=", "\"" + pass + "\"");
+}
+
+
+// brightness
+void loop_lower_brightness(){
+  if(process == 0){
+    if(last_touch == 2000){
+      brightness = 10;
+      SendDataNextion("dims=", String(brightness));
+    }
+    else if(last_touch == 0){
+      brightness = 100;
+      SendDataNextion("dims=", String(brightness));
+    }
+    last_touch += 10;
+  }
+  else if(process != 0 && brightness != 100){
+    brightness = 100;
+    SendDataNextion("dims=", String(brightness));
+  }
 }

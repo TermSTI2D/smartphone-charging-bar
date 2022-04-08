@@ -22,6 +22,8 @@ void recoverPhone();
 void recoveryProcess();
 void showLastPages(byte action);
 void endProcess();
+void popup(int action, String pass);
+void loop_lower_brightness();
 
 
 
