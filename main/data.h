@@ -18,4 +18,7 @@ String LoadData(String filename, String baseValue);
 void SaveByte(int address, byte value);
 byte LoadByte(int address);
 
+void SaveSequence(int startAddress, byte seq[]);
+void LoadSequence(int startAddress, byte seq[]);
+
 #endif

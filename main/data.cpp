@@ -23,7 +23,21 @@ byte LoadByte(int adress) {
   return EEPROM.read(adress);
 }
 
+void SaveSequence(int startAddress, byte seq[]) {
+  byte amount = sizeof(*seq) / sizeof(byte);
 
+  for (int a = 0; a < amount; a++, startAddress++) {
+    EEPROM.write(startAdress, seq[a]);
+  }
+}
+
+void LoadSequence(int startAdress, byte seq[]) {
+  byte amount = sizeof(*seq) / sizeof(byte);
+
+  for (int a = 0; a < amount; a++, startAdress++) {
+    seq[a] = EEPROM.read(startAdress);
+  }
+}
 
 
 
