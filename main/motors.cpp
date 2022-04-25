@@ -36,17 +36,24 @@ byte actualPlatPos = 0;       // Actual position (Or last if it's moving) (From 
 bool isOnLS = true;           // Used to know if the platform is on the limit switch
 unsigned long lastUpdate = 0; // Millis() of the last actualPos change (LS Security)
 
+motor ScrewMotor;
+motor PlatformMotor;
+
 
 /* Init function, call one time */
-void InitMotors(motor & screw, motor & platform) {
-  SetAimedPos(0);
+void InitMotors() {
+  pinMode(LSUp, INPUT);
+  pinMode(LSDown, INPUT);
+  pinMode(LSPlatform, INPUT);
 
-  screw = motor { ScrewMotorUp, ScrewMotorDown };
-  platform = motor { PlatformMotorAntiClockwise, PlatformMotorClockwise };
+  ScrewMotor = motor { ScrewMotorUp, ScrewMotorDown };
+  PlatformMotor = motor { PlatformMotorAntiClockwise, PlatformMotorClockwise };
 
   // Load the actualPlatPosition ( & Aimed position? )
+#ifdef DATA_H
   actualPlatPos = LoadData("curpos.txt", "0").toInt();
-  
+#endif
+
   isOnLS = true;
 
 #if SETSTATES == 1
@@ -61,14 +68,14 @@ void SetMotorStates(bool state) {
 
 
 /* Main function to call constantly */
-void ManageMotors(motor *screw, motor *platform) {
+void ManageMotors() {
   aimedPos = GetAimedPos();
   
   byte screwPos = aimedPos / 4;
-  StayScrewPos(screw, screwPos);
+  StayScrewPos(&ScrewMotor, screwPos);
   
   byte platformPos = aimedPos % 4;
-  StayPlatformPos(platform, platformPos);
+  StayPlatformPos(&PlatformMotor, platformPos);
 }
 
 // Motor management
@@ -101,7 +108,7 @@ void StayScrewPos(motor *screw, byte pos) {
 
 void StayPlatformPos(motor *platform, byte pos) {
   // Forward is Anti clockwise
-
+  
   bool LSState = digitalRead(LSPlatform);
   
   // Find shortest path
