@@ -39,6 +39,7 @@ unsigned long lastUpdate = 0; // Millis() of the last actualPos change (LS Secur
 motor ScrewMotor;
 motor PlatformMotor;
 
+int posAdress = 0;
 
 /* Init function, call one time */
 void InitMotors() {
@@ -49,9 +50,9 @@ void InitMotors() {
   ScrewMotor = motor { ScrewMotorUp, ScrewMotorDown };
   PlatformMotor = motor { PlatformMotorAntiClockwise, PlatformMotorClockwise };
 
-  // Load the actualPlatPosition ( & Aimed position? )
 #ifdef DATA_H
-  actualPlatPos = LoadData("curpos.txt", "0").toInt();
+  // Load actual plat pos
+  actualPlatPos = LoadByte(posAdress);
 #endif
 
   isOnLS = true;
@@ -124,7 +125,7 @@ void StayPlatformPos(motor *platform, byte pos) {
     actualPlatPos += forward ? 1 : -1;
     lastUpdate = millis();
 
-    SaveData("curpos.txt", String(actualPlatPos));
+    SaveByte(posAdress, actualPlatPos);
   }
 
 

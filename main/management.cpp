@@ -20,6 +20,8 @@ Phone phones[8] = {
 };
 
 void InitManagement() {
+  
+  
   // Load data
   //Serial.println( sizeof(Phone) );
   //Serial.println(phones[0].isEmpty);

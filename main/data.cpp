@@ -15,6 +15,29 @@
 
 #include "data.h"
 
+void SaveByte(int adress, byte value) {
+  EEPROM.write(adress, value);
+}
+
+byte LoadByte(int adress) {
+  return EEPROM.read(adress);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 SoftwareSerial OpenLog(OpenLogRX, OpenLogTX);
 bool isComMode = false;
 bool isComReady = false;
