@@ -1,5 +1,7 @@
 #include <SoftwareSerial.h>
 #include "screen.h"
+#include "pins.h"
+
 
 // Variables
 int messageReceived[7] = {};
