@@ -12,16 +12,14 @@
 
 /* Limit switch pins */
 
-
-
 struct motor {
   byte forward;
   byte backward;
 };
 
-void InitMotors(motor & screw, motor & platform);
+void InitMotors();
 void SetMotorStates(bool state);
-void ManageMotors(motor *screw, motor *platform);
+void ManageMotors();
 
 void StopMotor(motor *m);
 void SetMotor(motor *m, bool forward);
