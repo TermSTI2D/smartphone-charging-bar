@@ -1,16 +1,16 @@
 /****************************************************\
  *          Gestion des donnees
- * Initialisation par InitData
- *    Init la carte SD
+ * SaveByte ( adresse, valeur)
+ *    Sauvegarde 1 bit à l'adresse donnee
  *
- * SaveData ( filename, donnees ) <- Necessite la carte SD
- *    Sauvergarde les 'donnees' dans
- *    le fichier nomme 'filename'
+ * LoadByte ( adresse )
+ *    Charge 1 bit à l'adresse donnee
  *
- * LoadData( filename, basevalue ) <- Necessite la carte SD
- *    Charge les donnees du fichier
- *    'filename' et renvoie 'basevalue'
- *    si le fichier n'est pas trouvé
+ * SavePhones ( adresse, array, tailleArray )
+ *    Sauvegarde la liste de téléphone
+ *    
+ * LoadPhones ( adresse, array, tailleArray )
+ *    Charge la liste de téléphone dans l'array
 \****************************************************/
 
 #include "data.h"

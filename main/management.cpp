@@ -1,7 +1,15 @@
 /****************************************************\
  *          Gestion des téléphones
- * Script non fini
- *  \-> Doit finir le système d'attribution
+ * SetAimedPos ( pos ) ; GetAimedPos( void )
+ *    Gestion de la position des moteurs
+ *    
+ * RegisterPhone ( id, password )
+ *    Enregistre un telephone avec
+ *    le mot de passe fourni
+ *    
+ * RecoverPhone ( id )
+ *    Reset l'emplacement du telephone
+ *    a l'id donnee
 \****************************************************/
 
 #include "management.h"
