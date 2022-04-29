@@ -4,13 +4,11 @@
 #include <Arduino.h>
 #include "pins.h"
 #include "data.h"
-
-/* Motor pins ( Enable - In1 - In2 ) */
+#include "management.h"
 
 
 #define SETSTATES 0  // Set to one if "Enable" pins are set to other pins than 0
 
-/* Limit switch pins */
 
 struct motor {
   byte forward;

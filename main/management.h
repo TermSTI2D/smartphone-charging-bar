@@ -7,8 +7,10 @@
 
 #define PHONELINE 9
 
+#define POSITION_MEMORY 0
+#define PHONES_MEMORY 2
+
 struct Phone {
-  byte id : 3;
   bool isEmpty : 1;
   char password[5];
 };
@@ -18,9 +20,6 @@ void InitManagement();
 
 void SetAimedPos(byte newPos);
 byte GetAimedPos();
-
-void LoadPhones();
-void SavePhones();
 
 bool RegisterPhone(byte id, String password);
 bool RecoverPhone(byte id);

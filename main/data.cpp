@@ -15,42 +15,35 @@
 
 #include "data.h"
 
-void SaveByte(int adress, byte value) {
-  EEPROM.write(adress, value);
+void SaveByte(int address, byte value) {
+  EEPROM.write(address, value);
 }
 
-byte LoadByte(int adress) {
-  return EEPROM.read(adress);
+byte LoadByte(int address) {
+  return EEPROM.read(address);
 }
 
-void SaveSequence(int startAddress, byte seq[]) {
-  byte amount = sizeof(*seq) / sizeof(byte);
 
-  for (int a = 0; a < amount; a++, startAddress++) {
-    EEPROM.write(startAdress, seq[a]);
+void SavePhones(int address, Phone phones[], int arraySize) {
+  byte phoneSize = sizeof(Phone);
+  byte amount = arraySize / phoneSize;
+  
+  for (byte a = 0; a < amount; a++) {
+    EEPROM.put(a * phoneSize, phones[a]);
   }
 }
 
-void LoadSequence(int startAdress, byte seq[]) {
-  byte amount = sizeof(*seq) / sizeof(byte);
+void LoadPhones(int address, Phone phones[], int arraySize) {
+  byte phoneSize = sizeof(Phone);
+  byte amount = arraySize / phoneSize;
 
-  for (int a = 0; a < amount; a++, startAdress++) {
-    seq[a] = EEPROM.read(startAdress);
+  for (byte a = 0; a < amount; a++) {
+    EEPROM.get(a * phoneSize, phones[a]);
   }
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
+/* Carte SD (ancien systeme)
 
 SoftwareSerial OpenLog(OpenLogRX, OpenLogTX);
 bool isComMode = false;
@@ -154,4 +147,4 @@ String LoadData(String filename, String baseValue) {
   }
   
   return txt;
-}
+} //*/

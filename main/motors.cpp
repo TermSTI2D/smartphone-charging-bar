@@ -21,7 +21,6 @@
 \****************************************************/
 
 #include "motors.h"
-#include "management.h"
 
 /* Screw pos infos - Might be changed */
 #define POSDOWN 0
@@ -52,7 +51,7 @@ void InitMotors() {
 
 #ifdef DATA_H
   // Load actual plat pos
-  actualPlatPos = LoadByte(posAdress);
+  //actualPlatPos = LoadByte(posAdress);
 #endif
 
   isOnLS = true;
