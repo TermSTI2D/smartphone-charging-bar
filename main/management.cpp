@@ -10,6 +10,10 @@
  * RecoverPhone ( id )
  *    Reset l'emplacement du telephone
  *    a l'id donnee
+ * 
+ * GetNewPhoneId ( wireless ? )
+ *    Donne un ID libre en fonction
+ *    de la demande
 \****************************************************/
 
 #include "management.h"
@@ -64,4 +68,16 @@ bool RecoverPhone(byte id) {
     return true;
   }
   return false;
+}
+
+byte GetNewPhoneId(bool wireless) {
+  int id = wireless ? 3 : 7;
+  
+  for (; id >= 0; id--) {
+    if (phones[id].isEmpty) {
+      return id;
+    }
+  }
+
+  return -1;
 }

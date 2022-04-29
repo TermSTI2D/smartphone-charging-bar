@@ -24,4 +24,6 @@ byte GetAimedPos();
 bool RegisterPhone(byte id, String password);
 bool RecoverPhone(byte id);
 
+byte GetNewPhoneId(bool wireless = false);
+
 #endif
