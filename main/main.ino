@@ -21,39 +21,55 @@
  * Variables :  564   / 2048   (27%)
 \******************************************/
 
+
+// Valeurs CODE :
+// 0 - Alexys
+// 1 - Tortue
+#define CODE 1
+
 #define DEBUG_MODE 1
 #define FINAL_PRINT 1
 
 
 
 void setup() {
-#if DEBUG_MODE == 1
-  Serial.begin(9600);
-  InitMotors();
-  InitScreen();  
-#elif
-  // Code du projet final
 
-#if FINAL_PRINT == 1
   Serial.begin(9600);
-  Serial.println("Starting");
-#endif
 
-  // Inits
-  InitData();
+#if CODE == 0 // Début code Alexys
+
+  InitScreen();
+  
+#elif CODE == 1 // Début code Tortue
+
   InitMotors();
   InitManagement();
-  InitScreen();
+
+#elif CODE == 2 // Début code projet final
+
+  Serial.println("Code du projet final")
+
 #endif
 }
 
 
 void loop() {
-  //ManageMotors(&Screw, &Platform);  // Manage
-  
-  //SendDataNextion("locAvailable.val=", "5");
+
+#if CODE == 0 // Début code Alexys
+
   ReceiveDataNextion();
   sendCommandFromSerial();
   loop_lower_brightness();
+
+#elif CODE == 1 // Début code Tortue
+
+  //
+
+#elif CODE == 2 // Début code projet final
+
+  Serial.println("Loop projet final");
+
+#endif
+
   delay(10);
 }
