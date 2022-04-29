@@ -27,7 +27,7 @@ void SaveSequence(int startAddress, byte seq[]) {
   byte amount = sizeof(*seq) / sizeof(byte);
 
   for (int a = 0; a < amount; a++, startAddress++) {
-    EEPROM.write(startAdress, seq[a]);
+    EEPROM.write(startAddress, seq[a]);
   }
 }
 
