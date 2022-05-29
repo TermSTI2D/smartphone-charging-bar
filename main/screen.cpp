@@ -3,365 +3,307 @@
 #include "pins.h"
 
 
-// Variables
-int messageReceived[7] = {};
-String commandFromSerial = ""; 
-String password = "";
-String id ="";
-byte process = 0; //0 = none, 1 = add, 2 = recvoer
-// Add Smartphone
-String writePasswordVar = "";
-String type = "";
-int brightness = 100;
-int last_touch = 0;
+SoftwareSerial screenSerial(ScreenRx, ScreenTx);
+int currentPage = 0;
+int currentAction = NoAction;
 
-#define buttonsLine 1
-#define buttonsColumn 3
+int currentPassIndex = 0;
+char curPass[5] = "    ";
+int passFor = 0;
 
 struct Button {
   byte pageId;
-  byte buttonId;
-  void (*button_func) (void);
+  char key;
+  void (*on_call) (void);
 };
 
 Button buttons[] = {
-  { 0, 0, []() { last_touch = 0; } }, //Btn (Recharger son smartphone)
-  { 0, 3, []() { SendDataNextion("page", "2"); } }, //Btn (Recharger son smartphone)
-  { 2, 2, []() { SendDataNextion("page", "3"); } }, //Btn (Ajouter son smartphone)
-  { 3, 2, []() { addPhone("wireless"); } }, //Btn (Recharge sans fil)
-  { 3, 3, []() { addPhone("cable"); } }, //Btn (Recharge filaire)
-  { 4, 2, []() { validatePassword(); } }, //Btn (Valider : Page ajouter un code) // A améliroer
-  { 4, 3, []() { writePassword("erase"); } }, //Btn (Effacer : Page ajouter un code)
-  { 4, 4, []() { writePassword("0"); } }, //Btn (0 : Page ajouter un code)
-  { 4, 5, []() { writePassword("1"); } }, //Btn (1 : Page ajouter un code)
-  { 4, 6, []() { writePassword("2"); } }, //Btn (2 : Page ajouter un code)
-  { 4, 7, []() { writePassword("3"); } }, //Btn (3 : Page ajouter un code)
-  { 4, 8, []() { writePassword("4"); } }, //Btn (4 : Page ajouter un code)
-  { 4, 9, []() { writePassword("5"); } }, //Btn (5 : Page ajouter un code)
-  { 4, 10, []() { writePassword("6"); } }, //Btn (6 : Page ajouter un code)
-  { 4, 11, []() { writePassword("7"); } }, //Btn (7 : Page ajouter un code)
-  { 4, 12, []() { writePassword("8"); } }, //Btn (8 : Page ajouter un code)
-  { 4, 13, []() { writePassword("9"); } }, //Btn (9 : Page ajouter un code)
-  { 4, 17, []() { popup(1, writePasswordVar); } }, //Btn return 
-  { 5, 2, []() { showLastPages(1); } }, //Btn (Ok ! page ID)
-  { 8, 1, []() { endProcess(); } }, //Btn (Retour à l'acceuil)
-  { 0, 4, []() { SendDataNextion("page", "9"); } }, //Btn Récupérer smartphone
-  { 9, 2, []() { recoverPhone(); } }, //Btn Récupérer smartphone
-  // WriteId
-  { 10, 1, []() { writeId("1"); } }, //Btn "1"
-  { 10, 2, []() { writeId("2"); } }, //Btn "2"
-  { 10, 3, []() { writeId("3"); } }, //Btn "3"
-  { 10, 4, []() { writeId("4"); } }, //Btn "4"
-  { 10, 5, []() { writeId("5"); } }, //Btn "5"
-  { 10, 6, []() { writeId("6"); } }, //Btn "6"
-  { 10, 7, []() { writeId("7"); } }, //Btn "7"
-  { 10, 8, []() { writeId("8"); } }, //Btn "8"
-  { 10, 10, []() { writeId("erase"); } }, //Btn "erase"
-  { 10, 9, []() { confirmId(); } }, //Btn "ok"
-  { 14, 1, []() { endProcess(); } }, //Btn (Retour à l'acceuil)
-  { 15, 2, []() { popup(0, writePasswordVar); } }, //Btn continuer
-  { 15, 1, []() { endProcess(); } }, //Btn annuler
+  { Homepage, 'A', []() { GoToPage(ChargeConfirmation); } },      // Rechager son smartphone
+  { Homepage, 'B', []() { GoToPage(RecoverConfirmation); } },      // Recuperer son smartphone
+
+  { ChargeConfirmation, 'A', []() { StartAddProcedure(); } },     // Confirmation de recharge
+  { ChargeConfirmation, 'C', []() { GoToPage(Homepage); } },      // Retour à l'accueil
+  
+  { RecoverConfirmation, 'A', []() { StartRecoverProcedure(); } },     // Confirmation de recuperation
+  { RecoverConfirmation, 'C', []() { GoToPage(Homepage); } },      // Retour à l'accueil
+
+  { ChargeType, 'A', []() { SelectWireless(true); } },            // Recharge sans fils
+  { ChargeType, 'B', []() { SelectWireless(false); } },           // Recharge filaire
+  { ChargeType, 'C', []() { GoToPage(Homepage); } },              // Retour à l'accueil
+
+  { TypePassword, 'A', []() { ConfirmPassword(); } },            // Valide le mot de passe
+  { TypePassword, 'B', []() { EraseChar(); } },                  // Efface un caractère du mdp
+  { TypePassword, 'C', []() { BackPassword(); } },         // Retour page
+  { TypePassword, '0', []() { AddPassChar('0'); } },             // Ajoute un caractère au mdp
+  { TypePassword, '1', []() { AddPassChar('1'); } },             // Ajoute un caractère au mdp
+  { TypePassword, '2', []() { AddPassChar('2'); } },             // Ajoute un caractère au mdp
+  { TypePassword, '3', []() { AddPassChar('3'); } },             // Ajoute un caractère au mdp
+  { TypePassword, '4', []() { AddPassChar('4'); } },             // Ajoute un caractère au mdp
+  { TypePassword, '5', []() { AddPassChar('5'); } },             // Ajoute un caractère au mdp
+  { TypePassword, '6', []() { AddPassChar('6'); } },             // Ajoute un caractère au mdp
+  { TypePassword, '7', []() { AddPassChar('7'); } },             // Ajoute un caractère au mdp
+  { TypePassword, '8', []() { AddPassChar('8'); } },             // Ajoute un caractère au mdp
+  { TypePassword, '9', []() { AddPassChar('9'); } },             // Ajoute un caractère au mdp
+
+  { TypeID, 'A', []() { ValidateID(); } },                      // Valide le mot de passe
+  { TypeID, 'B', []() { EraseID(); } },                  // Efface un caractère du mdp
+  { TypeID, 'C', []() { GoToPage(Homepage); } },         // Retour page
+  { TypeID, '1', []() { ClickID('1'); } },             // Ajoute un caractère au mdp
+  { TypeID, '2', []() { ClickID('2'); } },             // Ajoute un caractère au mdp
+  { TypeID, '3', []() { ClickID('3'); } },             // Ajoute un caractère au mdp
+  { TypeID, '4', []() { ClickID('4'); } },             // Ajoute un caractère au mdp
+  { TypeID, '5', []() { ClickID('5'); } },             // Ajoute un caractère au mdp
+  { TypeID, '6', []() { ClickID('6'); } },             // Ajoute un caractère au mdp
+  { TypeID, '7', []() { ClickID('7'); } },             // Ajoute un caractère au mdp
+  { TypeID, '8', []() { ClickID('8'); } },             // Ajoute un caractère au mdp
+  
+  { GetLocation, 'A', []() { StartWaitForDoor(); } },                   // Ajoute un caractère au mdp
+  { GoodbyePage, 'A', []() { GoToPage(Homepage); } },              // Ajoute un caractère au mdp
+  
 };
 
 size_t bsize = sizeof(buttons) / sizeof(Button);
 
 
-
-// char buttons[buttonsLine][buttonsColumn] = { //[Lignes][Colones]
-//   {'0','3','SendDataNextion(page, 2)'} //Page ID, Button ID, Function
-// };
-
-SoftwareSerial  nextionSerial(screenRx, screenTx); // RX, TX
-
 void InitScreen(){
-  Serial.println("--------------------------");
-  Serial.begin(9600);
-  Serial.println("Serial port has been set to 9600");
-  Serial.println("--------------------------");
-  nextionSerial.begin(9600);
-  Serial.println("nextionSerial port has been set to 9600");
-  SendDataNextion("page", "0");
-  SendDataNextion("dims=", "100");
+  screenSerial.begin(9600);
+  GoToPage(Homepage);
+  //SendCommand("dims", "100");
 }
 
-//Search button
-void searchButton(int pageId,int buttonId){
-  Serial.println("");
-  Serial.println("Search page " + String(pageId) + " and button " + String(buttonId));
-  for (size_t i = 0; i < bsize; i++) {
-    if (buttons[i].pageId == pageId && buttons[i].buttonId == buttonId) {
-      buttons[i].button_func();
+void UpdateScreen() {
+
+  if (currentAction == NoAction) {
+    char pressed = GetPressed();
+    if (pressed) {
+      CallButton(currentPage, pressed);
+    }
+  } else if (currentAction == WaitForDoor) {
+    if (AreAtRightPlace()) {
+      OpenDoor();
+      delay(150);
+      CloseDoor();
+      
+      currentAction = NoAction;
+      GoToPage(GoodbyePage);
+    }
+  }
+
+  
+}
+
+void CallButton(byte pageId, char key) {
+
+  for (size_t index = 0; index < bsize; index++) {
+    if (buttons[index].pageId == pageId && buttons[index].key == key) {
+      buttons[index].on_call();
       break;
     }
+  }  
+}
+
+void SendCommand(String command) {
+
+#if DEBUG_MODE == 0
+  screenSerial.print(command);
+
+  screenSerial.write(0xff);
+  screenSerial.write(0xff);
+  screenSerial.write(0xff);
+#elif DEBUG_MODE == 1
+  Serial.print(command);
+
+  Serial.write(0xff);
+  Serial.write(0xff);
+  Serial.write(0xff);
+#endif
+
+}
+
+void SendCommand(String prefix, int value, bool guillemet) {
+  if (guillemet) {
+    SendCommand(prefix + "=\"" + String(value) + "\"");
+  } else {
+    SendCommand(prefix + "=" + String(value));
   }
 }
 
-void ReceiveDataNextion(){
-  if  (nextionSerial.available()){
-    delay(10);
-    for (int i = 0; i < 7; i++) {
-      messageReceived[i] = nextionSerial.read();
-    }
-    // Serial log
-    Serial.println("");
-    Serial.println("Received : ");
-    for (int i = 0; i < 7; i++) {
-      Serial.print("   Data" + String(i) + " : " + messageReceived[i]);
-    }
-    delay(10);
-    if(messageReceived[0]==101){
-      searchButton(messageReceived[1],messageReceived[2]);
-    }
-  }
+void SendCommand(String prefix, String value) {
+  SendCommand(prefix + "=\"" + value + "\"");
 }
 
-void SendDataNextion(String action, String value){
-  if(action == "page"){
-    nextionSerial.print(action + " " + value);
-  }
-  else{
-    nextionSerial.print(action);
-    nextionSerial.print(value);
-  }
-  nextionSerial.write(0xff);
-  nextionSerial.write(0xff);
-  nextionSerial.write(0xff);
-  //Serial log
-  Serial.println("Sent : " + action + value + "\"");
+void GoToPage(int pageId) {
+  SendCommand("page " + String(pageId));
+  currentPage = pageId;
+
+  //Serial.println("Now on page: " + String(pageId));
 }
 
-void sendCommandFromSerial(){
+void SendCommandFromSerial() {
   if (Serial.available()) {
-    Serial.println("");
-    Serial.print("Command sent from Serial : ");
-    // Save search command in variable
-    commandFromSerial = Serial.readString();
-    Serial.println(commandFromSerial);
-    // Data processing
-    // Separate command and value (with spaec)
-    String command = commandFromSerial.substring(0, commandFromSerial.indexOf(" "));
-    String value = commandFromSerial.substring(commandFromSerial.indexOf(" ") + 1);
-    // Delete spaces
-    command.trim();
-    value.trim();
-    // Send data to Nextion
-    SendDataNextion(command, value);
+    String commandFromSerial = Serial.readString();
+    commandFromSerial.trim();
+    SendCommand(commandFromSerial);
   }
 }
 
-// Write password
-void writePassword(String actionOrNumber){
-    if(actionOrNumber == "erase"){
-      int length=writePasswordVar.length();
-      writePasswordVar.setCharAt(length-1,'\t');
-      writePasswordVar.trim();
+
+
+
+
+// AddPhone procedure
+
+struct AddPhone {
+  bool wireless;
+  byte id;
+  char password[5];
+};
+
+AddPhone currentAdd = { false, 0, "0000" };
+
+void StartAddProcedure() {
+  currentAdd.wireless = false;
+  currentAdd.id = 0;
+  strcpy(currentAdd.password, "    ");
+  
+  currentPassIndex = 0;
+  GoToPage(ChargeType);
+}
+
+void SelectWireless(bool wireless) {
+  currentAdd.wireless = wireless;
+
+  passFor = Register;
+  StartTypePassword();
+
+  currentAdd.id = GetNewPhoneId(wireless);
+  SetAimedPos(currentAdd.id);
+}
+
+
+void StartWaitForDoor() {
+  //Serial.println(currentAdd.id);
+  //Serial.println(currentAdd.password);
+  
+  GoToPage(WaitDoorPage);
+  currentAction = WaitForDoor;
+
+  RegisterPhone(currentAdd.id, String(currentAdd.password));
+}
+
+
+
+
+
+// Recover phone procedure
+
+struct RecoverPhone {
+  char id;
+  char password[5];
+};
+
+struct RecoverPhone currentRec = { ' ', "    " };
+
+void StartRecoverProcedure() {
+  currentRec.id = ' ';
+  strcpy(currentRec.password, "    ");
+  
+  GoToPage(TypeID);
+}
+
+void ClickID(char id) {
+  if (currentRec.id == ' ') {
+    currentRec.id = id;
+  }
+  
+  UpdateID();
+}
+
+void EraseID() {
+  currentRec.id = ' ';
+  UpdateID();
+}
+
+void UpdateID() {
+  //Serial.println(currentRec.id);
+  SendCommand("idTxt.txt", String(currentRec.id));
+}
+
+void ValidateID() {
+  if (currentRec.id != ' ') {
+    passFor = Recover;
+    StartTypePassword();
+  }
+}
+
+void OnPassword() {
+  byte id = (byte)(currentRec.id - '0');
+  if (IsGoodPassword(id, String(curPass))) {
+    SetAimedPos(id);
+    StartWaitForDoor();
+  } else {
+    SendCommand("errorMessage.txt", "Mot de passe ou ID incorrecte");
+  }
+}
+
+
+
+
+
+// Type Password
+void StartTypePassword() {
+  GoToPage(TypePassword);
+  currentPassIndex = 0;
+  strcpy(curPass, "    ");
+  UpdatePasswordText();
+}
+
+void AddPassChar(char c) {
+  if (currentPassIndex <= 3) {
+    curPass[currentPassIndex++] = c;
+  }
+
+  UpdatePasswordText();
+}
+
+void EraseChar() {
+  if (currentPassIndex > 0) {
+    curPass[--currentPassIndex] = ' ';
+  }
+  
+  UpdatePasswordText();
+}
+
+void UpdatePasswordText() {
+  SendCommand("passwordTxt.txt", String(curPass));
+  //Serial.println(curPass);
+}
+
+void ConfirmPassword() {
+  if (currentPassIndex == 4) {
+    switch (passFor) {
+      case Register:
+        GoToPage(GetLocation);
+        delay(10);
+        SendCommand("id.val", currentAdd.id);
+        strcpy(currentAdd.password, curPass);
+        break;
+      case Recover:
+        OnPassword();
+        break;
     }
-    else if(writePasswordVar.length() < 4){
-      writePasswordVar = writePasswordVar + actionOrNumber;
-    }
-  SendDataNextion("passwordTxt.txt=", "\"" + writePasswordVar + "\"");
-}
-
-// Write Id
-void writeId(String actionOrNumber){
-    if(actionOrNumber == "erase"){
-      int length=id.length();
-      id.setCharAt(length-1,'\t');
-      id.trim();
-    }
-    else if(id.length() < 1){
-      id = id + actionOrNumber;
-    }
-  SendDataNextion("idTxt.txt=", "\"" + id + "\"");
-}
-
-// Function that verifies password security 
-
-bool allCharactersSame(String s){
-    int n = s.length();
-    for (int i = 1; i < n; i++)
-        if (s[i] != s[0])
-            return false;
- 
-    return true;
-}
-
-// Validate password
-void validatePassword(){
-  if(writePasswordVar.length() < 4){
-    SendDataNextion("errorMessage.txt=", "\"Votre code doit disposer de 4 chiffres.\"");
-  }
-  else if(writePasswordVar == "1234" && process == 1 || writePasswordVar == "0000" && process == 1 || allCharactersSame(writePasswordVar) == true && process == 1){
-    SendDataNextion("errorMessage.txt=", "\"Votre code n'est pas assez fort.\"");
-  }
-  else{
-    SendDataNextion("errorMessage.txt=", "\"\"");
-    if(process == 1){
-      if(password == ""){
-        password = writePasswordVar;
-        writePasswordVar = "";
-        SendDataNextion("passwordTxt.txt=", "\"" + writePasswordVar + "\"");
-        SendDataNextion("title.txt=", "\" Confirmer le code \"");
-        SendDataNextion("description.txt=", "\" Vous devez ressaisir votre code. \"");      
-      }
-      else{
-        confirmPassword();
-      }
-    }
-    else if(process == 2){
-      if(writePasswordVar == writePasswordVar){ // Tortue : Ici pour vérifier si mot de passe correspond à ID
-        recoveryProcess();
-      }
-      else{
-        SendDataNextion("errorMessage.txt=", "\"Votre code n'est pas bon.\"");
-      }  
-    }
+  } else {
+    SendCommand("errorMessage.txt", "Votre code doit disposer de 4 chiffres");
   }
 }
 
-// Confirm password
-void confirmPassword(){
-  if(writePasswordVar == password){
-    //Give ID
-    SendDataNextion("page", "5");
-    SendDataNextion("id.val=", "2"); //Le 2 est à remplacer par une fonction d'ID
-    // Tortue : C'est ici pour mettres le l'ID
-
-    // C'est provisoir !! (donc à enlever après)
-    delay(2000);
-    showLastPages(1); // Page "Ouverture porte"
-    delay(2000);
-    showLastPages(2); // Page "vous pouvez placer votre smartphone"
-    delay(2000);
-    showLastPages(3); // Page "Remerciement"
-
-  }
-  else{
-    SendDataNextion("errorMessage.txt=", "\"Votre code est incorrect.\"");
-  }
-}
-
-// Confirm ID
-
-void confirmId(){
-  if(id.length() == 1 && id == id){ //Tortue : Ici pour tester si ID ets dans la liste
-    SendDataNextion("page", "4");
-    SendDataNextion("passwordTxt.txt=", "\"" + password + "\"");
-    SendDataNextion("title.txt=", "\" Quel est votre code ? \"");
-    SendDataNextion("description.txt=", "\" Votre mot de passe correspond a celui que vous avez entre au depot de votre smartphone. \"");
-
-  }
-  else{
-    SendDataNextion("errorMessage.txt=", "\"l'Id est incorrect.\"");
-  }
-}
-
-//Function AddPhone
-//Type : wireless, cable
-void addPhone(String _type){
-  type = _type;
-  password = "";
-  process = 1;
-  SendDataNextion("page", "4");
-  SendDataNextion("passwordTxt.txt=", "\"" + password + "\"");
-  SendDataNextion("title.txt=", "\" Ajouter un code \"");
-  SendDataNextion("description.txt=", "\" Vous devrez retenir ce code pour recuperer votre smartphone. \"");
-}
-
-//Function RecoverPhone
-void recoverPhone(){
-  process = 2;
-  id = "";
-  password = "";
-  SendDataNextion("page", "10");
-}
-// Function Recovery process
-
-void recoveryProcess(){
-  SendDataNextion("page", "12"); //Page "Votre téléphone arrive"
-  delay(2000);
-  showLastPages(1);
-  delay(2000);
-  showLastPages(2);
-  delay(2000);
-  showLastPages(3);
-}
-
-// Function 
-//  1 = ouverturePorte, 2 = Rocov/Place, 3 = message 
-void showLastPages(byte action){ 
-  if(action == 1){
-    SendDataNextion("page", "6");
-  }
-  else if(action == 2 && process == 1){
-    SendDataNextion("page", "7");
-  }
-  else if(action == 2 && process == 2){
-    SendDataNextion("page", "13");
-  }
-  else if(action == 3 && process == 1){
-    SendDataNextion("page", "8");
-  }
-  else if(action == 3 && process == 2){
-    SendDataNextion("page", "14");
-  }
-} 
-
-void endProcess(){
-  String password = "";
-  SendDataNextion("page", "0");
-  writePasswordVar = "";
-  process = 0;
-  id = "";
-  password = "";
-  last_touch = 0;
-}
-
-
-// Action 0 = close, 1 = open
-void popup(int action, String pass){
-  // If it's page pass confirmation
-  if(process == 1 && password != ""){
-    addPhone(type);
-    return;
-  }
-  if(action == 0){
-    SendDataNextion("page", "4");
-    Serial.println("la");
-
-  }
-  else if(action == 1){
-    SendDataNextion("page", "15");
-  }
-  switch(process){
-    case 1:
-      SendDataNextion("title.txt=", "\" Ajouter un code \"");
-      SendDataNextion("description.txt=", "\" Vous devrez retenir ce code pour recuperer votre smartphone. \"");
+void BackPassword() {
+  switch(passFor) {
+    case Register:
+      GoToPage(ChargeType);
       break;
-    case 2:
-      SendDataNextion("title.txt=", "\" Quel est votre code ? \"");
-      SendDataNextion("description.txt=", "\" Votre code correspond a celui que vous avez entre au depot de votre smartphone. \"");
+    case Recover:
+      GoToPage(TypeID);
       break;
-  }
-  SendDataNextion("passwordTxt.txt=", "\"" + pass + "\"");
-}
-
-
-// brightness
-void loop_lower_brightness(){
-  if(process == 0){
-    if(last_touch == 2000){
-      brightness = 10;
-      SendDataNextion("dims=", String(brightness));
-    }
-    else if(last_touch == 0){
-      brightness = 100;
-      SendDataNextion("dims=", String(brightness));
-    }
-    last_touch += 10;
-  }
-  else if(process != 0 && brightness != 100){
-    brightness = 100;
-    SendDataNextion("dims=", String(brightness));
   }
 }

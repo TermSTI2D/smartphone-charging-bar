@@ -6,6 +6,8 @@
 #include "data.h"
 #include "management.h"
 
+#define POS_ADDRESS 0
+#define ROT_COUNT_ADDRESS 1
 
 #define SETSTATES 0  // Set to one if "Enable" pins are set to other pins than 0
 
@@ -24,5 +26,7 @@ void SetMotor(motor *m, bool forward);
 
 void StayScrewPos(motor *screw, byte pos);
 void StayPlatformPos(motor *platform, byte pos);
+
+bool AreAtRightPlace();
 
 #endif

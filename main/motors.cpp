@@ -32,13 +32,12 @@
 byte aimedPos = 0;            // Targeted position
 
 byte actualPlatPos = 0;       // Actual position (Or last if it's moving) (From 0 to 3)
+int rotCount = 3;
 bool isOnLS = true;           // Used to know if the platform is on the limit switch
 unsigned long lastUpdate = 0; // Millis() of the last actualPos change (LS Security)
 
 motor ScrewMotor;
 motor PlatformMotor;
-
-int posAdress = 0;
 
 /* Init function, call one time */
 void InitMotors() {
@@ -49,11 +48,9 @@ void InitMotors() {
   ScrewMotor = motor { ScrewMotorUp, ScrewMotorDown };
   PlatformMotor = motor { PlatformMotorAntiClockwise, PlatformMotorClockwise };
 
-#ifdef DATA_H
-  // Load actual plat pos
-  //actualPlatPos = LoadByte(posAdress);
-#endif
-
+  actualPlatPos = LoadByte(POS_ADDRESS);
+  rotCount = LoadByte(ROT_COUNT_ADDRESS);
+  
   isOnLS = true;
 
 #if SETSTATES == 1
@@ -101,40 +98,52 @@ void StayScrewPos(motor *screw, byte pos) {
 
   if (digitalRead(lswitch) == LOW) {
     SetMotor(screw, dir);
+    Serial.println("Motor");
   } else {
     StopMotor(screw);
   }
 }
 
+
+byte temp; int left, right; bool forward;
 void StayPlatformPos(motor *platform, byte pos) {
   // Forward is Anti clockwise
-  
+  pos = 2;
   bool LSState = digitalRead(LSPlatform);
-  
-  // Find shortest path
-  bool forward = pos % 2 == actualPlatPos % 2;
 
-  if (!forward) {
-    byte dir = pos - actualPlatPos;
-    forward = dir == -3 | dir == 1;
+  temp = (actualPlatPos - pos); temp %= 4;
+  left = -temp;
+  right = 4 - temp;
+
+  if (rotCount + left > 0) {
+    forward = false;
+  } else if (rotCount + right < 6) {
+    forward = true;
   }
 
-  // Update actualPos
   if (LSState && !isOnLS && millis() - lastUpdate > SecurityDelay) {
     actualPlatPos += forward ? 1 : -1;
+    actualPlatPos %= 4;
+    rotCount += forward ? 1 : -1;
+
     lastUpdate = millis();
 
-    SaveByte(posAdress, actualPlatPos);
-  }
-
-
-  // Go to the targeted position
-  byte current = actualPlatPos % 4;
-  if (current != pos || !isOnLS) {
-    SetMotor(platform, forward);
-  } else {
-    StopMotor(platform);
+    SaveByte(POS_ADDRESS, actualPlatPos);
+    SaveByte(ROT_COUNT_ADDRESS, rotCount);
   }
   
+  if (actualPlatPos == pos && isOnLS) {
+    StopMotor(platform);
+  } else {
+    SetMotor(platform, forward);
+  }
+
   isOnLS = LSState;
+
+  Serial.print(rotCount); Serial.print(" ");
+  Serial.println(actualPlatPos);
+}
+
+bool AreAtRightPlace() {
+  return actualPlatPos == GetAimedPos() % 4 && isOnLS;
 }

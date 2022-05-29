@@ -18,10 +18,4 @@ byte LoadByte(int address);
 void SavePhones(int address, struct Phone phones[], int arraySize);
 void LoadPhones(int address, struct Phone phones[], int arraySize);
 
-/*
-void InitData();
-void CleanTo(char c);
-void SaveData(String filename, String data);
-String LoadData(String filename, String baseValue); //*/
-
 #endif

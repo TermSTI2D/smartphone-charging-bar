@@ -29,7 +29,7 @@ void SavePhones(int address, Phone phones[], int arraySize) {
   byte amount = arraySize / phoneSize;
   
   for (byte a = 0; a < amount; a++) {
-    EEPROM.put(a * phoneSize, phones[a]);
+    EEPROM.put(address + a * phoneSize, phones[a]);
   }
 }
 
@@ -38,6 +38,6 @@ void LoadPhones(int address, Phone phones[], int arraySize) {
   byte amount = arraySize / phoneSize;
 
   for (byte a = 0; a < amount; a++) {
-    EEPROM.get(a * phoneSize, phones[a]);
+    EEPROM.get(address + a * phoneSize, phones[a]);
   }
 }

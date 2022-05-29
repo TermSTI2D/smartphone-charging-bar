@@ -51,8 +51,8 @@ bool RegisterPhone(byte id, String password) {
   if (p->isEmpty) {
     p->isEmpty = false;
     password.toCharArray(p->password, 5);
+    SavePhones();
     
-    SavePhones(PHONES_MEMORY, phones, sizeof(phones));
     return true;
   }
   return false;
@@ -64,10 +64,15 @@ bool RecoverPhone(byte id) {
   if (!p->isEmpty) {
     p->isEmpty = true;
     strcpy(p->password, "0000");
-    SavePhones(PHONES_MEMORY, phones, sizeof(phones));
+    SavePhones();
     return true;
   }
   return false;
+}
+
+bool IsGoodPassword(byte id, String pass) {
+  String phonePass = String(phones[id].password);
+  return phonePass == pass;
 }
 
 byte GetNewPhoneId(bool wireless) {
@@ -80,4 +85,16 @@ byte GetNewPhoneId(bool wireless) {
   }
 
   return -1;
+}
+
+void ResetPhones() {
+  for (byte i = 0; i < 8; i++) {
+    RecoverPhone(i);
+  }
+
+  SavePhones();
+}
+
+void SavePhones() {
+    SavePhones(PHONES_MEMORY, phones, sizeof(phones));
 }

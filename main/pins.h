@@ -1,26 +1,27 @@
 #ifndef PIN_H
 #define PIN_H
 
-// Data
-#define OpenLogRX 0
-#define OpenLogTX 3
-#define OpenLogReset 4
 
 // Motors
 #define ScrewMotorEnable 0
-#define ScrewMotorUp 4
-#define ScrewMotorDown 5
+#define ScrewMotorUp 6
+#define ScrewMotorDown 7
 
 #define PlatformMotorEnable 0
-#define PlatformMotorAntiClockwise 6
-#define PlatformMotorClockwise 7
+#define PlatformMotorAntiClockwise 8
+#define PlatformMotorClockwise 9
 
 #define LSUp 2
-#define LSDown 2
-#define LSPlatform 3
+#define LSDown 3
+#define LSPlatform 4
+
+// Door
+#define ElectroMagnet 5
 
 // Ecran
-#define screenRx 10
-#define screenTx 11
+#define ScreenRx 10
+#define ScreenTx 11
+
+// Pavé numérique
 
 #endif

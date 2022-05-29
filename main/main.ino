@@ -21,55 +21,34 @@
  * Variables :  564   / 2048   (27%)
 \******************************************/
 
+void ResetMemory() {
+  // Motors
+  SaveByte(POS_ADDRESS, 0);
+  SaveByte(ROT_COUNT_ADDRESS, 3);
 
-// Valeurs CODE :
-// 0 - Alexys
-// 1 - Tortue
-#define CODE 1
-
-#define DEBUG_MODE 1
-#define FINAL_PRINT 1
-
-
-
-void setup() {
-
-  Serial.begin(9600);
-
-#if CODE == 0 // Début code Alexys
-
-  InitScreen();
-  
-#elif CODE == 1 // Début code Tortue
-
-  InitMotors();
-  InitManagement();
-
-#elif CODE == 2 // Début code projet final
-
-  Serial.println("Code du projet final")
-
-#endif
+  // Phones
+  ResetPhones();
 }
 
+void setup() {
+  Serial.begin(9600);
+
+  ResetMemory();
+  
+  InitDoor();
+  InitManagement();
+  InitMotors();
+  InitScreen();
+
+  CloseDoor();
+}
 
 void loop() {
-
-#if CODE == 0 // Début code Alexys
-
-  ReceiveDataNextion();
-  sendCommandFromSerial();
-  loop_lower_brightness();
-
-#elif CODE == 1 // Début code Tortue
-
-  //
-
-#elif CODE == 2 // Début code projet final
-
-  Serial.println("Loop projet final");
-
-#endif
-
+  if (digitalRead(4) == HIGH) {
+    //Serial.println("High");
+  }
+  
+  ManageMotors();
+  UpdateScreen();
   delay(10);
 }
